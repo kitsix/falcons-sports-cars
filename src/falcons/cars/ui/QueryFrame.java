@@ -1,3 +1,5 @@
+package falcons.cars.ui;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -7,7 +9,7 @@ import java.util.*;
 // Upon clicking the "Execute" button, the query will be sent back to the Frame class which passes the query along to the ConnectionHandler.
 // The ConnectionHandler will actually execute the query and return the results Frame.
 // The Frame will then display the query results via a new instance of the QueryResultsFrame.
-class QueryFrame extends JFrame
+public class QueryFrame extends JFrame
 	implements ActionListener, WindowListener
 {
 	Frame host;

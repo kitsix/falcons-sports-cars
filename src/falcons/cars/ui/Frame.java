@@ -1,3 +1,7 @@
+package falcons.cars.ui;
+
+import falcons.cars.connector.*;
+import falcons.cars.ui.*;
 import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +32,7 @@ import javax.sql.*;
 //
 // Currently only the following buttons are functional:
 // login, logout, query, clear, closeQueryResults, and exit.
-class Frame extends JFrame
+public class Frame extends JFrame
 			implements ActionListener, WindowListener
 {
     protected String username;

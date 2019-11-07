@@ -1,3 +1,5 @@
+package falcons.cars.connector;
+
 import java.lang.*;
 import java.util.*;
 import java.sql.*;
@@ -5,10 +7,10 @@ import javax.sql.*;
 
 // This class is responsible for:
 // 1: taking credentials and correctly establishing a connection
-// 2: executing querys and returning the ResultSet objects
+// 2: executing queries and returning the ResultSet objects
 // 3: closing an established connection
 // This class also has several test functions for debugging.
-class ConnectionHandler
+public class ConnectionHandler
 {
     String username;
     String password;
@@ -18,9 +20,9 @@ class ConnectionHandler
     String databaseType;
     String JdbcUrl;
     
-    Connection conn;
+    public Connection conn;
     
-    ConnectionHandler()
+    public ConnectionHandler()
     {       
         conn = null;
     }

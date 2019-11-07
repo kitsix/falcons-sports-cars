@@ -1,3 +1,5 @@
+package falcons.cars.ui;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,7 +10,7 @@ import javax.sql.*;
 // This is a simple class for displaying query results.
 // Note that each instance of this class is stored in a the queryResultsFrameVector data member of the Frame class.
 // This is to allow a user to dispose of all currently open QueryResultsFrame with a single click of the "Close Query Results" button.
-class QueryResultsFrame extends JFrame
+public class QueryResultsFrame extends JFrame
 	implements WindowListener
 {
 	Frame host;
