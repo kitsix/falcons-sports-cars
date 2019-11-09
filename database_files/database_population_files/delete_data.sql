@@ -5,7 +5,7 @@ Populate in this order with CSV files:
 - people
 - vehicles
 
-Then execute "insert_data_01.sql" for the remaining tables
+Then execute "insert_data.sql" for the remaining tables
 */
 
 DELETE FROM addresses;

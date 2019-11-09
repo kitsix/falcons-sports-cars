@@ -32,7 +32,7 @@ for sourceRow in sourceFileContents:
     if x == 0:
         dealershipsWriter.writerow([sourceRow[9], sourceRow[0], sourceRow[1]])
         
-    elif x > 0 and x < 100:
+    elif x > 0 and x <= 20:
         dealershipsWriter.writerow([x, sourceRow[0], sourceRow[1]])
     
     peopleWriter.writerow([sourceRow[5], sourceRow[6], sourceRow[7], sourceRow[8], sourceRow[0], sourceRow[1]])
@@ -42,7 +42,7 @@ for sourceRow in sourceFileContents:
     
     else:
         dealership_number = int(sourceRow[9])
-        dealership_number = (dealership_number % 100) + 1
+        dealership_number = (dealership_number % 20) + 1
     
     if x == 0:
         vehiclesWriter.writerow([sourceRow[16], sourceRow[17], sourceRow[18], sourceRow[19], sourceRow[20], sourceRow[21], sourceRow[22], sourceRow[23], sourceRow[24], sourceRow[25], dealership_number])
