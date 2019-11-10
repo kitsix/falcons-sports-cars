@@ -30,7 +30,7 @@ class QueryFrame extends JFrame
 		this.host = host;
 		this.addWindowListener(this);
 
-        queryArea = new JTextArea("SELECT * FROM users"); // DEFAULTING TO A VALUE FOR TESTING
+        queryArea = new JTextArea("SELECT * FROM addresses"); // DEFAULTING TO A VALUE FOR TESTING
         queryAreaScrollPane = new JScrollPane(queryArea);
 
 		execute = new JButton("Execute");

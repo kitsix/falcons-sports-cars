@@ -15,6 +15,5 @@ DELETE FROM sales_emps;
 DELETE FROM customers;
 DELETE FROM manages;
 DELETE FROM vehicles;
-DELETE FROM schedules;
 DELETE FROM test_drives;
 DELETE FROM purchase_vehicle;

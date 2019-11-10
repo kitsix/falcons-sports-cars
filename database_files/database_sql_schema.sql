@@ -73,9 +73,6 @@ CREATE TABLE Vehicles(
 		ON DELETE CASCADE
 		ON UPDATE CASCADE);
 
-CREATE TABLE Schedules(
-	datetime DATETIME PRIMARY KEY);
-
 CREATE TABLE Test_Drives(
 	customer_id INT,
 	stock_number INT,
@@ -86,10 +83,7 @@ CREATE TABLE Test_Drives(
 		ON UPDATE CASCADE,
 	FOREIGN KEY (stock_number) REFERENCES Vehicles(stock_number)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE,
-	FOREIGN KEY (datetime) REFERENCES Schedules(datetime)
-		ON DELETE CASCADE
-        ON UPDATE CASCADE);
+		ON UPDATE CASCADE);
 
 CREATE TABLE Purchase_Vehicle(
 	customer_id INT,
@@ -123,7 +117,7 @@ CREATE VIEW Sales_Per_Sales_Emp_Current_Year (id, sales) AS
 CREATE VIEW Commissions_Per_Sales_Emp_Current_Year (id, commissions_total) AS
 	SELECT SE.id, SUM(V.price * (PV.percentage/100))
 	FROM sales_emps SE, people P, purchase_vehicle PV, vehicles V, customers C
-	WHERE SE.id = P.id AND PV.stock_number = V.stock_number AND PV.customer_id = C.id AND C.assigned_emp_id = SE.id AND YEAR(V.sale_datetime) = YEAR(NOW())
+	WHERE SE.id = P.id AND PV.stock_number = V.stock_number AND PV.customer_id = C.id AND C.assigned_emp_id = SE.id AND YEAR(V.delivery_datetime) = YEAR(NOW())
 	GROUP BY SE.id;
 
 CREATE VIEW Customers_Info AS
@@ -140,11 +134,6 @@ CREATE VIEW Customers_Purchased_Vehicles AS
 	SELECT C.id, PV.stock_number, V.make, V.model, V.price, V.sale_datetime, V.dealership_number AS sold_vehicle_dealership_number
 	FROM customers C, Sales_Emps SE, purchase_vehicle PV, vehicles V
 	WHERE C.assigned_emp_id = SE.id AND SE.dealership_number = V.dealership_number AND C.id = PV.customer_id AND V.stock_number = PV.stock_number;
-
-
-
-
-
 
 
 

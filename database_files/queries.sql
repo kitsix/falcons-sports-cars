@@ -25,7 +25,7 @@ WHERE CI.id = ? AND CI.id = CTDV.id AND CTDV.dealership_number = D.dealership_nu
 */
 
 /*
-Query 2: A maanger/salesperson, for a given make and model, should be able to view the list of customers who test drove the vehicle.
+Query 2: A manager/salesperson, for a given make and model, should be able to view the list of customers who test drove the vehicle.
 */
 
 SELECT D.dealership_number, C.id, P.first_name, P.last_name, TD.stock_number, V.make, V.model, TD.datetime

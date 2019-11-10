@@ -136,23 +136,23 @@ class Frame extends JFrame
 
 		customerVisitInfo = new JButton("Customer Visit Info");
 		customerVisitInfo.addActionListener(this);
-		// customerVisitInfo.setActionCommand("EXIT");
+		customerVisitInfo.setActionCommand("CUSTOMER_VISIT_INFO");
 
         testDrivenInfo = new JButton("Test-Driven Vehicles Info");
         testDrivenInfo.addActionListener(this);
-        // testDrivenInfo.setActionCommand("EXIT");
+        testDrivenInfo.setActionCommand("TEST_DRIVEN_VEHICLES");
 
         topFiveVehiclesInfo = new JButton("Top 5 Vehicles");
         topFiveVehiclesInfo.addActionListener(this);
-        // topFiveVehiclesInfo.setActionCommand("EXIT");
+        topFiveVehiclesInfo.setActionCommand("TOP_FIVE_VEHICLES");
 
         totalSalesInfo = new JButton("Total Sales Per Dealership");
         totalSalesInfo.addActionListener(this);
-        // totalSalesInfo.setActionCommand("EXIT");
+        totalSalesInfo.setActionCommand("TOTAL_DEALERSHIP_SALES");
 
         salesPeopleInfo = new JButton("Sales Employee Info");
         salesPeopleInfo.addActionListener(this);
-        // salesPeopleInfo.setActionCommand("EXIT");
+        salesPeopleInfo.setActionCommand("SALES_EMPS_INFO");
 
         queryButtonPanel = new JPanel();
         queryButtonPanel.add(customerVisitInfo);
@@ -201,6 +201,11 @@ class Frame extends JFrame
 		logout.setEnabled(false);
 		register.setEnabled(false);
         query.setEnabled(false);
+        customerVisitInfo.setEnabled(false);
+        testDrivenInfo.setEnabled(false);
+        topFiveVehiclesInfo.setEnabled(false);
+        totalSalesInfo.setEnabled(false);
+        salesPeopleInfo.setEnabled(false);
 
         Toolkit tk;
 		Dimension d;
@@ -233,7 +238,7 @@ class Frame extends JFrame
                 // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
                 // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
 
-                connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "127.0.0.1", 3306, "java_db_test", "MySQL"); // Again, this is for my test setup.
+                connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
                 connectionHandler.createJdbcUrl();
                 connectionHandler.establishConnection();
             }
@@ -255,6 +260,11 @@ class Frame extends JFrame
                 logout.setEnabled(true);
                 register.setEnabled(true);
                 query.setEnabled(true);
+                customerVisitInfo.setEnabled(true);
+                testDrivenInfo.setEnabled(true);
+                topFiveVehiclesInfo.setEnabled(true);
+                totalSalesInfo.setEnabled(true);
+                salesPeopleInfo.setEnabled(true);
             }
         }
 
@@ -295,6 +305,11 @@ class Frame extends JFrame
                 logout.setEnabled(false);
                 register.setEnabled(false);
                 query.setEnabled(false);
+                customerVisitInfo.setEnabled(false);
+                testDrivenInfo.setEnabled(false);
+                topFiveVehiclesInfo.setEnabled(false);
+                totalSalesInfo.setEnabled(false);
+                salesPeopleInfo.setEnabled(false);
             }
         }
 
@@ -341,7 +356,27 @@ class Frame extends JFrame
             e.printStackTrace();
         }
 	}
-
+    
+    public void performQueryAndDisplayResults(String query)
+    {
+        try
+        {            
+            ResultSet resultSet = connectionHandler.performQuery(query);
+            
+            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, query, resultSet);  
+            
+            queryResultsCount += 1;
+            
+            queryResultsFrameVector.addElement(queryResultsFrame);        
+            queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
+        }
+            
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
     public void clear()
 	{
 		System.out.println("Frame: CLEAR");
@@ -379,6 +414,119 @@ class Frame extends JFrame
         queryResultsCount = 0;        
         queryResultsFrameVector.removeAllElements();        
     }
+    
+    public void getCustomerVisitInfo()
+    {
+        System.out.println("Frame: CUSTOMER_VISIT_INFO");
+        
+        String customerID = (JOptionPane.showInputDialog(this, "Enter the customer's ID:")).trim();
+                                
+        if (!customerID.equals(""))
+        {
+            try
+            {
+                String query = "SELECT CI.id, CI.first_name, CI.last_name, CI.customer_notes, CTDV.dealership_number, D.street, D.zip, CTDV.stock_number, CTDV.datetime " +
+                                "FROM customers_info CI, customers_test_driven_vehicles CTDV, dealerships D "  + 
+                                "WHERE CI.id = \'" + customerID + "\' AND CI.id = CTDV.id AND CTDV.dealership_number = D.dealership_number";
+                
+                performQueryAndDisplayResults(query);
+            }
+                
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }        
+        }
+        
+        else
+            JOptionPane.showMessageDialog(this, "You cannot enter an empty string for the customer's ID!", "Alert", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public void getTestDrivenVehicles()
+    {
+        System.out.println("Frame: TEST_DRIVEN_VEHICLES");
+        
+        String response = (JOptionPane.showInputDialog(this, "Enter the make and model separated by a space:")).trim();
+                
+        String components[] = response.split(" ");
+        String make = components[0];
+        String model = components[components.length - 1];
+        
+        if (!(make.equals("") && model.equals("")))
+        {
+            String query = "SELECT D.dealership_number, C.id, P.first_name, P.last_name, TD.stock_number, V.make, V.model, TD.datetime " +
+                            "FROM customers C, people P, sales_emps E, test_drives TD, vehicles V, dealerships D " +
+                            "WHERE V.make = \'" + make + "\' AND V.model = \'" + model + "\' AND V.stock_number = TD.stock_number AND " +
+                            "TD.customer_id = C.id AND C.id = P.id AND C.assigned_emp_id = E.id AND E.dealership_number = D.dealership_number";
+            
+            performQueryAndDisplayResults(query);
+        }
+        
+        else
+            JOptionPane.showMessageDialog(this, "You cannot enter an empty string for the make and model!", "Alert", JOptionPane.INFORMATION_MESSAGE);
+    }
+        
+    public void getTopFiveVehicles()
+    {
+        System.out.println("Frame: TOP_FIVE_VEHICLES");                                
+
+        try
+        {
+            String query = "SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new " +
+                            "FROM vehicles V, purchase_vehicle PV " +
+                            "WHERE PV.stock_number = V.stock_number " +
+                            "GROUP BY V.make, V.model, V.year, V.new " +
+                            "ORDER BY num_sold_vehicles DESC";
+            
+            performQueryAndDisplayResults(query);
+        }
+            
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }        
+    }
+        
+    public void getTotalDealershipSales()
+    {
+        System.out.println("Frame: TOTAL_DEALERSHIP_SALES");                                
+
+        try
+        {
+            String query = "SELECT D.dealership_number, SUM(V.price) AS total_amount_sold " +
+                            "FROM vehicles V, purchase_vehicle PV, dealerships D " +
+                            "WHERE PV.stock_number = V.stock_number AND V.dealership_number = D.dealership_number AND MONTH(V.sale_datetime) = MONTH(NOW()) " +
+                            "GROUP BY D.dealership_number " +
+                            "ORDER BY total_amount_sold DESC";
+            
+            performQueryAndDisplayResults(query);
+        }
+            
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }        
+    }
+        
+    public void getSalesEmpsInfo()
+    {
+        System.out.println("Frame: SALES_EMPS_INFO");                                
+
+        try
+        {
+            String query = "SELECT SEI.id, SEI.dealership_number, SEI.first_name, SEI.last_name, SEI.email, SEI.street, SEI.zip, SEI.phone_number, TDSE.test_drives, SSE.sales, CSE.commissions_total " +
+                            "FROM sales_emps_info SEI, test_drives_per_sales_emp_current_year TDSE, sales_per_sales_emp_current_year SSE, commissions_per_sales_emp_current_year CSE " +
+                            "WHERE SEI.id = TDSE.id AND SEI.id = SSE.id AND SEI.id = CSE.id " +
+                            "ORDER BY CSE.commissions_total DESC";
+            
+            performQueryAndDisplayResults(query);
+        }
+            
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }        
+    }
 
 	public void actionPerformed(ActionEvent e)
 	{
@@ -409,6 +557,21 @@ class Frame extends JFrame
             
             else if (cmd.equals("CLOSE_QUERY_RESULTS_FRAMES"))
                 closeQueryResultsFrames();
+            
+            else if (cmd.equals("CUSTOMER_VISIT_INFO"))
+                getCustomerVisitInfo();
+            
+            else if (cmd.equals("TEST_DRIVEN_VEHICLES"))
+                getTestDrivenVehicles();
+            
+            else if (cmd.equals("TOP_FIVE_VEHICLES"))
+                getTopFiveVehicles();
+            
+            else if (cmd.equals("TOTAL_DEALERSHIP_SALES"))
+                getTotalDealershipSales();
+            
+            else if (cmd.equals("SALES_EMPS_INFO"))
+                getSalesEmpsInfo();
 		}
 
 		catch (Exception x)
