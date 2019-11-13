@@ -69,6 +69,7 @@ class Frame extends JFrame
     
     QueryFrame queryFrame; 
     ConnectionHandler connectionHandler;
+    LoginDialog loginDialog;
 
     Vector<QueryResultsFrame> queryResultsFrameVector;    
     int queryResultsCount;
@@ -321,6 +322,7 @@ class Frame extends JFrame
 	public void register()
 	{
 		System.out.println("Frame: REGISTER");
+        loginDialog = new LoginDialog();
 	}
     
     public void displayQueryFrame()
@@ -407,12 +409,15 @@ class Frame extends JFrame
     public void closeQueryResultsFrames()
     {
         System.out.println("Frame: QUERY_RESULTS_FRAME_CLOSING");
+
+        loginDialog = new LoginDialog();
+
         
-        for (QueryResultsFrame x : queryResultsFrameVector)
-            x.dispose();
+        // for (QueryResultsFrame x : queryResultsFrameVector)
+        //     x.dispose();
         
-        queryResultsCount = 0;        
-        queryResultsFrameVector.removeAllElements();        
+        // queryResultsCount = 0;        
+        // queryResultsFrameVector.removeAllElements();        
     }
     
     public void getCustomerVisitInfo()
