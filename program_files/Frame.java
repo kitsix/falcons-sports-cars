@@ -63,8 +63,6 @@ class Frame extends JFrame
 
     boolean loggedIn;
 
-    NavigationBar navigationBar;
-
     Frame()
     {
 		loggedIn = false;
@@ -141,20 +139,6 @@ class Frame extends JFrame
 
 		getRootPane().setDefaultButton(login);
 
-        navigationBar = new NavigationBar();
-
-        //f.add(mb);f.add(ta);    
-        //f.setJMenuBar(mb);  
-        //f.setLayout(null);    
-        //f.setSize(400,400);    
-        //f.setVisible(true);
-
-        ////JFrame navPanel = new JPanel();
-        //navPanel.setLayout(new BorderLayout());
-        //navPanel.add(navigationBar, BorderLayout.NORTH);
-        //navPanel.setJMenuBar(navigationBar);
-        //navPanel.setVisible(true);
-
         mainPanel = new JPanel();
 
 		layout = new GroupLayout(mainPanel);
@@ -182,13 +166,29 @@ class Frame extends JFrame
 		layout.setVerticalGroup(vGroup);
 
         contentPane.add(mainPanel, BorderLayout.CENTER);
-        //contentPane.add(navPanel, BorderLayout.NORTH);
-        contentPane.setJMenuBar(navigationBar);
         
         queryFrame = new QueryFrame(this);
         queryResultsFrameVector = new Vector<QueryResultsFrame>();
         
         queryResultsCount = 0;
+
+        JMenuBar menuBar = new JMenuBar();
+        //ImageIcon exitIcon = new ImageIcon("src/resources/exit.png");
+        //TBA (:
+
+        JMenu fileMenu = new JMenu("Hello");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+
+        JMenuItem eMenuItem = new JMenuItem("Exit"/*, exitIcon*/);
+        eMenuItem.setMnemonic(KeyEvent.VK_E);
+        eMenuItem.setToolTipText("Exit application");
+        eMenuItem.addActionListener((event) -> System.exit(0));
+
+        fileMenu.add(eMenuItem);
+        menuBar.add(fileMenu);
+
+        setJMenuBar(menuBar);
+        this.setVisible(true);
 
 		login.setEnabled(true);
 		logout.setEnabled(false);
@@ -340,7 +340,7 @@ class Frame extends JFrame
 		// 	logout();
 		// }
 
-		//System.exit(0);
+		System.exit(0);
 
         //navigationBar = new NavigationBar();
     }
