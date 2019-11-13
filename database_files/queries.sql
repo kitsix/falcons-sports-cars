@@ -47,7 +47,8 @@ SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new
 FROM vehicles V, purchase_vehicle PV
 WHERE PV.stock_number = V.stock_number
 GROUP BY V.make, V.model, V.year, V.new
-ORDER BY num_sold_vehicles DESC;
+ORDER BY num_sold_vehicles DESC
+LIMIT 0, 5;
 
 /*
 Query 4: A manager should be able to list the dealership locations in order of their total sales amount in the current month.
