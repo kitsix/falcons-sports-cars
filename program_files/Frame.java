@@ -30,20 +30,7 @@ import javax.sql.*;
 // login, logout, query, clear, closeQueryResults, and exit.
 class Frame extends JFrame
 			implements ActionListener, WindowListener
-{
-    protected String username;
-	protected String password;
-
-	boolean loggedIn;
-    
-    JLabel usernameLabel;    
-    JTextField usernameField;
-    JPanel usernamePanel;
-    
-    JLabel passwordLabel;
-    JPasswordField passwordField;
-    JPanel passwordPanel;
-    
+{ 
     JPanel fieldPanel;
     
 	JButton login;
@@ -74,6 +61,10 @@ class Frame extends JFrame
     Vector<QueryResultsFrame> queryResultsFrameVector;    
     int queryResultsCount;
 
+    boolean loggedIn;
+
+    NavigationBar navigationBar;
+
     Frame()
     {
 		loggedIn = false;
@@ -81,22 +72,8 @@ class Frame extends JFrame
         this.addWindowListener(this);
 
 		Container contentPane = getContentPane();
-        
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameField = new JTextField("java_test_user", 25); // DEFAULTING TO A VALUE FOR TESTING         
-        usernamePanel = new JPanel();
-        usernamePanel.add(usernameLabel);
-        usernamePanel.add(usernameField);
-        
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordField = new JPasswordField("pass", 25); // DEFAULTING TO A VALUE FOR TESTING       
-        passwordPanel = new JPanel();
-        passwordPanel.add(passwordLabel);
-        passwordPanel.add(passwordField);
 
         fieldPanel = new JPanel();        
-        fieldPanel.add(usernamePanel);
-        fieldPanel.add(passwordPanel);
 
 		login = new JButton("Login");
 		login.addActionListener(this);
@@ -163,7 +140,21 @@ class Frame extends JFrame
         queryButtonPanel.add(salesPeopleInfo);
 
 		getRootPane().setDefaultButton(login);
-        
+
+        navigationBar = new NavigationBar();
+
+        //f.add(mb);f.add(ta);    
+        //f.setJMenuBar(mb);  
+        //f.setLayout(null);    
+        //f.setSize(400,400);    
+        //f.setVisible(true);
+
+        ////JFrame navPanel = new JPanel();
+        //navPanel.setLayout(new BorderLayout());
+        //navPanel.add(navigationBar, BorderLayout.NORTH);
+        //navPanel.setJMenuBar(navigationBar);
+        //navPanel.setVisible(true);
+
         mainPanel = new JPanel();
 
 		layout = new GroupLayout(mainPanel);
@@ -191,9 +182,10 @@ class Frame extends JFrame
 		layout.setVerticalGroup(vGroup);
 
         contentPane.add(mainPanel, BorderLayout.CENTER);
+        //contentPane.add(navPanel, BorderLayout.NORTH);
+        contentPane.setJMenuBar(navigationBar);
         
         queryFrame = new QueryFrame(this);
-        connectionHandler = new ConnectionHandler();
         queryResultsFrameVector = new Vector<QueryResultsFrame>();
         
         queryResultsCount = 0;
@@ -224,54 +216,6 @@ class Frame extends JFrame
 		setVisible(true);        
         setResizable(false);
     }
-
-	public void login()
-	{
-		System.out.println("Frame: LOGIN");
-        
-        boolean loginSucceeded = true;
-        
-        if (!loggedIn || connectionHandler.conn == null)
-        {    
-            try
-            {
-                // connectionHandler.setConnectionProperties("java_test_user", "pass", "127.0.0.1", 3306, "java_db_test", "MySQL"); // This is for my local database.
-                // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
-                // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
-
-                connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
-                connectionHandler.createJdbcUrl();
-                connectionHandler.establishConnection();
-            }
-            
-            catch (Exception e)
-            {
-                loginSucceeded = false;
-                
-                JOptionPane.showMessageDialog(this, "Login failed!", "Alert", JOptionPane.ERROR_MESSAGE);
-                
-                e.printStackTrace();
-            }
-            
-            if (loginSucceeded)
-            {            
-                loggedIn = true;
-                        
-                login.setEnabled(false);
-                logout.setEnabled(true);
-                register.setEnabled(true);
-                query.setEnabled(true);
-                customerVisitInfo.setEnabled(true);
-                testDrivenInfo.setEnabled(true);
-                topFiveVehiclesInfo.setEnabled(true);
-                totalSalesInfo.setEnabled(true);
-                salesPeopleInfo.setEnabled(true);
-            }
-        }
-
-        else
-			JOptionPane.showMessageDialog(this, "You are already logged in!", "Alert", JOptionPane.INFORMATION_MESSAGE);
-	}
 
  	public void logout()
 	{
@@ -383,20 +327,22 @@ class Frame extends JFrame
 	{
 		System.out.println("Frame: CLEAR");
 
-        usernameField.setText("");
-        passwordField.setText("");
+        //usernameField.setText("");
+        //passwordField.setText("");
 	}
 
     public void exit()
     {
 		System.out.println("Frame: EXIT");
         
-        if (loggedIn || connectionHandler.conn != null)
-		{
-			logout();
-		}
+        // if (loggedIn || connectionHandler.conn != null)
+		// {
+		// 	logout();
+		// }
 
-		System.exit(0);
+		//System.exit(0);
+
+        //navigationBar = new NavigationBar();
     }
 
     public void removeQueryResultsFrame(QueryResultsFrame queryResultsFrameToRemove)
@@ -540,7 +486,7 @@ class Frame extends JFrame
 		try
 		{
             if (cmd.equals("LOGIN"))
-				login();
+				System.out.println("hi login button was pressed.");
 
 			else if (cmd.equals("LOGOUT"))
 				logout();
@@ -599,10 +545,10 @@ class Frame extends JFrame
 	{        
 		System.out.println("Frame: windowClosing");
 
-		if (loggedIn || connectionHandler.conn != null)
-		{
-			logout();
-		}
+		// if (loggedIn || connectionHandler.conn != null)
+		// {
+		// 	logout();
+		// }
         
         System.exit(0);
 	}

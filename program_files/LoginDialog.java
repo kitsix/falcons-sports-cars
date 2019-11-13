@@ -105,7 +105,58 @@ public void actionPerformed (ActionEvent e)
     else if (e.getActionCommand().equals("LOGIN BUTTON"))
     {
         System.out.println("goodbye");
+        login();
     } // end of else if
     
 } 
+
+public void login()
+{
+    boolean loggedIn=false;
+    ConnectionHandler connectionHandler;
+    connectionHandler = new ConnectionHandler();
+    boolean loginSucceeded = true;
+        
+        if (!loggedIn || connectionHandler.conn == null)
+        {    
+            try
+            {
+                // connectionHandler.setConnectionProperties("java_test_user", "pass", "127.0.0.1", 3306, "java_db_test", "MySQL"); // This is for my local database.
+                // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
+                // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
+
+                connectionHandler.setConnectionProperties(usernameTF.getText(), new String(passwordTF.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
+                connectionHandler.createJdbcUrl();
+                connectionHandler.establishConnection();
+            }
+            
+            catch (Exception e)
+            {
+                loginSucceeded = false;
+                
+                JOptionPane.showMessageDialog(this, "Login failed!", "Alert", JOptionPane.ERROR_MESSAGE);
+                
+                e.printStackTrace();
+            }
+            
+            if (loginSucceeded)
+            {            
+                loggedIn = true;
+                System.out.println("login was successfullllll (:");
+                        
+                // login.setEnabled(false);
+                // logout.setEnabled(true);
+                // register.setEnabled(true);
+                // query.setEnabled(true);
+                // customerVisitInfo.setEnabled(true);
+                // testDrivenInfo.setEnabled(true);
+                // topFiveVehiclesInfo.setEnabled(true);
+                // totalSalesInfo.setEnabled(true);
+                // salesPeopleInfo.setEnabled(true);
+            }
+            else
+			JOptionPane.showMessageDialog(this, "You are already logged in!", "Alert", JOptionPane.INFORMATION_MESSAGE);
+	
+        }
+}
 }
