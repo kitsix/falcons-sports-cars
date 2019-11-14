@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 // This class is responsible for creating a GUI into which a user can enter an SQL query.
 // Upon clicking the "Execute" button, the query will be sent back to the Frame class which passes the query along to the ConnectionHandler.
@@ -11,19 +10,11 @@ class QueryFrame extends JFrame
 	implements ActionListener, WindowListener
 {
 	Frame host;
-    
     JTextArea queryArea;
     JScrollPane queryAreaScrollPane;
-
-	JButton execute;
-	JButton clear;
-	JButton cancel;
-
+	JButton execute, clear, cancel;
 	GroupLayout layout;
-
-	JPanel buttonPanel;
-	JPanel fieldPanel;
-	JPanel mainPanel;
+	JPanel buttonPanel, fieldPanel, mainPanel;
 
     QueryFrame(Frame host)
 	{        

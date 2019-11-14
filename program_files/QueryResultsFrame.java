@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.sql.*;
-import javax.sql.*;
 
 // This is a simple class for displaying query results.
 // Note that each instance of this class is stored in a the queryResultsFrameVector data member of the Frame class.
@@ -12,17 +11,12 @@ class QueryResultsFrame extends JFrame
 	implements WindowListener
 {
 	Frame host;
-    
-    JLabel queryLabel;
+    JLabel queryLabel, queryResultsTableLabel;
     JTextArea queryArea;
     JScrollPane queryAreaScrollPane = null;
-    
-    JLabel queryResultsTableLabel;
     JTable queryResultsTable;
     JScrollPane queryResultsTableScrollPane = null;
-
     JPanel mainPanel;
-
     GroupLayout layout;
 
     QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet)

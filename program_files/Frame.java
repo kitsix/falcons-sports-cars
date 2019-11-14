@@ -3,8 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.sql.*;
-import javax.sql.*;
 
 // You will need Connector/J installed on your system and you will need to specify the installation path when you run the program.
 // I do this through command line as follows -- the general format is as follows:
@@ -56,10 +54,6 @@ class Frame extends JFrame
 		logoutButton = new JButton("Logout");
 		logoutButton.addActionListener(this);
 		logoutButton.setActionCommand("LOGOUT");
-
-		registerButton = new JButton("Register");
-		registerButton.addActionListener(this);
-		registerButton.setActionCommand("REGISTER");
         
         queryButton = new JButton("Query");
         queryButton.addActionListener(this);
@@ -101,6 +95,10 @@ class Frame extends JFrame
 
         mainPanel = new JPanel();
         mainPanel.add(topFiveVehiclesInfo);
+        mainPanel.add(customerVisitInfo);
+        mainPanel.add(testDrivenInfo);
+        mainPanel.add(totalSalesInfo);
+        mainPanel.add(salesPeopleInfo);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);
@@ -111,7 +109,7 @@ class Frame extends JFrame
         //ImageIcon exitIcon = new ImageIcon("src/resources/exit.png");
         //TBA (:
 
-        JMenu loginMenu = new JMenu("User");
+        JMenu loginMenu = new JMenu("Guest");
         loginMenu.setMnemonic(KeyEvent.VK_F);
         loginMenu.add(Box.createHorizontalGlue());
         menuBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -120,9 +118,9 @@ class Frame extends JFrame
         JMenu spaceMenu2 = new JMenu("                                                                                                              ");
         spaceMenu.setEnabled(false);
 
-        JMenuItem loginMenuItem = new JMenuItem("Login"/*, exitIcon*/);
+        JMenuItem loginMenuItem = new JMenuItem("Query"/*, exitIcon*/);
         loginMenuItem.setMnemonic(KeyEvent.VK_E);
-        loginMenuItem.setToolTipText("Login to account");
+        loginMenuItem.setToolTipText("Test a query");
         loginMenuItem.addActionListener((event) -> System.exit(0));
         
         loginMenu.add(loginMenuItem);
@@ -134,6 +132,8 @@ class Frame extends JFrame
         setJMenuBar(menuBar);
         this.setVisible(true);
         setupMainFrame();
+        connectionHandler = new ConnectionHandler();
+        connectToDatabase();
     }
 
     void setupMainFrame(){
@@ -149,6 +149,25 @@ class Frame extends JFrame
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);        
         setResizable(true);
+    }
+
+    public void connectToDatabase(){
+        
+        try{
+            // connectionHandler.setConnectionProperties("java_test_user", "pass", "127.0.0.1", 3306, "java_db_test", "MySQL"); // This is for my local database.
+            // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
+            // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
+            //connectionHandler.setConnectionProperties(usernameTF.getText(), new String(passwordTF.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
+            connectionHandler.setConnectionProperties("root", "littlewhale", "localhost", 3306, "falconcars", "MySQL"); // Again, this is for my test setup.
+            connectionHandler.createJdbcUrl();
+            connectionHandler.establishConnection();
+
+        }
+        catch (Exception e){
+            JOptionPane.showMessageDialog(this, "Connection failed!", "Alert", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        
     }
 
  	public void logout(){
@@ -181,7 +200,7 @@ class Frame extends JFrame
 
 	public void register(){
 		System.out.println("Frame: REGISTER");
-        loginDialog = new LoginDialog(this);
+        loginDialog = new LoginDialog(this, this.connectionHandler);
 	}
     
     public void displayQueryFrame(){
@@ -243,8 +262,9 @@ class Frame extends JFrame
 
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
-        loginDialog = new LoginDialog(this);
-        this.connectionHandler = loginDialog.getConnectionHandler();
+        loginDialog = new LoginDialog(this, this.connectionHandler);
+        this.loginButton.setText("Logout");
+        this.loginButton.setActionCommand("LOGOUT");
     }
     
     public void closeQueryResultsFrames(){
@@ -358,6 +378,8 @@ class Frame extends JFrame
 		try{
             if (cmd.equals("LOGIN")){
                 login();
+                this.loginButton.setText("Logout");
+                this.loginButton.setActionCommand("LOGOUT");
             }
 
 			else if (cmd.equals("LOGOUT"))
