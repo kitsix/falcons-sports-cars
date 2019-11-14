@@ -182,6 +182,11 @@ class Frame extends JFrame
                 this.loginButton.setText("Login");
                 this.loginButton.setActionCommand("LOGIN");
                 this.loginMenu.setText("Guest");
+                this.customerVisitsMenuItem.setVisible(false);
+                this.employeeInformationMenuItem.setVisible(false);
+                this.salesMenuItem.setVisible(false);
+                this.testDriveMenuItem.setVisible(false);
+                this.topFiveVehiclesMenuItem.setVisible(false);
             }
         }
 
