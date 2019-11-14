@@ -8,50 +8,44 @@ import javax.swing.JDialog;
 import javax.swing.GroupLayout.*;
 import java.lang.Object;
 
-
 class LoginDialog  extends  JDialog
 implements ActionListener
 {
-JTextField              usernameTF;
-JPasswordField          passwordTF;
-JLabel                  usernameLabel;
-JLabel                  passwordLabel;
-JPanel                  myMainPanel;
-JPanel                  buttonP;
-JButton                 registerButton;
-JButton                 loginButton;
+    JTextField              usernameTF;
+    JPasswordField          passwordTF;
+    JLabel                  usernameLabel, passwordLabel;
+    JPanel                  myMainPanel, buttonP;
+    JButton                 registerButton, loginButton;
 
+    LoginDialog(){
 
-LoginDialog()
-{
-    System.out.println("login dialog created hello");
-    buttonP = new JPanel(new FlowLayout());
-    
-    buildBasicGui(); // method call
-    
-    registerButton = new JButton("register");
-    loginButton = new JButton("login");
-    
-    registerButton.setActionCommand("REGISTER BUTTON");
-    loginButton.setActionCommand("LOGIN BUTTON");
-    
-    registerButton.addActionListener(this);
-    loginButton.addActionListener(this);
-    
-    buttonP.add(registerButton);
-    buttonP.add(loginButton);
-    add (buttonP, BorderLayout.SOUTH);
-    
-    setSize(300, 300);
-    setVisible(true);
-    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setResizable(false);
+        System.out.println("login dialog created hello");
+        buttonP = new JPanel(new FlowLayout());
+        
+        buildBasicGui(); // method call
+        
+        registerButton = new JButton("register");
+        loginButton = new JButton("login");
+        
+        registerButton.setActionCommand("REGISTER BUTTON");
+        loginButton.setActionCommand("LOGIN BUTTON");
+        
+        registerButton.addActionListener(this);
+        loginButton.addActionListener(this);
+        
+        buttonP.add(registerButton);
+        buttonP.add(loginButton);
+        add (buttonP, BorderLayout.SOUTH);
+        
+        setSize(300, 300);
+        setVisible(true);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setResizable(false);
     
 } // end of constructor
 //---------------------------------------------------------------------------------------------------------------
 
-void buildBasicGui()
-{
+void buildBasicGui(){
     myMainPanel = new JPanel();
     
     GroupLayout layout = new GroupLayout(myMainPanel);
@@ -85,78 +79,50 @@ void buildBasicGui()
     //setupMainDialog();
     
 } // end of buildbasicGui
-//----------------------------------------------------------------------------------------------------------------
 
-public void actionPerformed (ActionEvent e)
-{
+public void actionPerformed (ActionEvent e){
     String username = usernameTF.getText().trim();
     String password = new String(passwordTF.getPassword());
     
-    
-    
-    if (e.getActionCommand().equals("REGISTER BUTTON"))
-    {
+    if (e.getActionCommand().equals("REGISTER BUTTON")){
         System.out.println("registering");
-
-        
-        
     }
     
-    else if (e.getActionCommand().equals("LOGIN BUTTON"))
-    {
+    else if (e.getActionCommand().equals("LOGIN BUTTON")){
         System.out.println("goodbye");
         login();
-    } // end of else if
-    
+    } // end of else if 
 } 
 
-public void login()
-{
+public void login(){
     boolean loggedIn=false;
     ConnectionHandler connectionHandler;
     connectionHandler = new ConnectionHandler();
     boolean loginSucceeded = true;
         
-        if (!loggedIn || connectionHandler.conn == null)
-        {    
-            try
-            {
+        if (!loggedIn || connectionHandler.conn == null){    
+            try{
                 // connectionHandler.setConnectionProperties("java_test_user", "pass", "127.0.0.1", 3306, "java_db_test", "MySQL"); // This is for my local database.
                 // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
                 // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
-
-                connectionHandler.setConnectionProperties(usernameTF.getText(), new String(passwordTF.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
+                //connectionHandler.setConnectionProperties(usernameTF.getText(), new String(passwordTF.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
+                connectionHandler.setConnectionProperties("root", "littlewhale", "localhost", 3306, "falconcars", "MySQL"); // Again, this is for my test setup.
                 connectionHandler.createJdbcUrl();
                 connectionHandler.establishConnection();
             }
             
-            catch (Exception e)
-            {
+            catch (Exception e){
                 loginSucceeded = false;
-                
                 JOptionPane.showMessageDialog(this, "Login failed!", "Alert", JOptionPane.ERROR_MESSAGE);
-                
                 e.printStackTrace();
             }
             
-            if (loginSucceeded)
-            {            
+            if (loginSucceeded){            
                 loggedIn = true;
                 System.out.println("login was successfullllll (:");
-                        
-                // login.setEnabled(false);
-                // logout.setEnabled(true);
-                // register.setEnabled(true);
-                // query.setEnabled(true);
-                // customerVisitInfo.setEnabled(true);
-                // testDrivenInfo.setEnabled(true);
-                // topFiveVehiclesInfo.setEnabled(true);
-                // totalSalesInfo.setEnabled(true);
-                // salesPeopleInfo.setEnabled(true);
             }
             else
 			JOptionPane.showMessageDialog(this, "You are already logged in!", "Alert", JOptionPane.INFORMATION_MESSAGE);
-	
         }
-}
+    }
 }

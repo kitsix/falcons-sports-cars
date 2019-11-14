@@ -31,84 +31,51 @@ import javax.sql.*;
 class Frame extends JFrame
 			implements ActionListener, WindowListener
 { 
-    JPanel fieldPanel;
-    
-	JButton login;
-	JButton logout;
-	JButton register;
-    JButton query;
-    JButton clear;
-    JButton closeQueryResults;
-	JButton exit;
-    
-    JPanel buttonPanel;
-
-    JButton customerVisitInfo;
-    JButton testDrivenInfo;
-    JButton topFiveVehiclesInfo;
-    JButton totalSalesInfo;
-    JButton salesPeopleInfo; 
-    
-    JPanel queryButtonPanel;
-    
-    JPanel mainPanel;
+	JButton loginButton, logoutButton, registerButton, queryButton, clearButton, closeQueryResultsButton, exitButton;    
+    JPanel mainPanel, queryButtonPanel;
+    JButton customerVisitInfo, testDrivenInfo, topFiveVehiclesInfo, totalSalesInfo, salesPeopleInfo;
 	GroupLayout layout;
-    
     QueryFrame queryFrame; 
     ConnectionHandler connectionHandler;
     LoginDialog loginDialog;
-
     Vector<QueryResultsFrame> queryResultsFrameVector;    
     int queryResultsCount;
-
     boolean loggedIn;
 
-    Frame()
-    {
+    Frame(){
 		loggedIn = false;
         
         this.addWindowListener(this);
 
 		Container contentPane = getContentPane();
 
-        fieldPanel = new JPanel();        
+		loginButton = new JButton("Login");
+		loginButton.addActionListener(this);
+		loginButton.setActionCommand("LOGIN");
 
-		login = new JButton("Login");
-		login.addActionListener(this);
-		login.setActionCommand("LOGIN");
+		logoutButton = new JButton("Logout");
+		logoutButton.addActionListener(this);
+		logoutButton.setActionCommand("LOGOUT");
 
-		logout = new JButton("Logout");
-		logout.addActionListener(this);
-		logout.setActionCommand("LOGOUT");
-
-		register = new JButton("Register");
-		register.addActionListener(this);
-		register.setActionCommand("REGISTER");
+		registerButton = new JButton("Register");
+		registerButton.addActionListener(this);
+		registerButton.setActionCommand("REGISTER");
         
-        query = new JButton("Query");
-        query.addActionListener(this);
-        query.setActionCommand("DISPLAY_QUERY_FRAME");
+        queryButton = new JButton("Query");
+        queryButton.addActionListener(this);
+        queryButton.setActionCommand("DISPLAY_QUERY_FRAME");
         
-        clear = new JButton("Clear");
-        clear.addActionListener(this);
-        clear.setActionCommand("CLEAR");
+        clearButton = new JButton("Clear");
+        clearButton.addActionListener(this);
+        clearButton.setActionCommand("CLEAR");
         
-        closeQueryResults = new JButton("Close Query Results");
-        closeQueryResults.addActionListener(this);
-        closeQueryResults.setActionCommand("CLOSE_QUERY_RESULTS_FRAMES");
+        closeQueryResultsButton = new JButton("Close Query Results");
+        closeQueryResultsButton.addActionListener(this);
+        closeQueryResultsButton.setActionCommand("CLOSE_QUERY_RESULTS_FRAMES");
         
-        exit = new JButton("Exit");
-        exit.addActionListener(this);
-        exit.setActionCommand("EXIT");
-
-        buttonPanel = new JPanel();
-        buttonPanel.setAlignmentY(LEFT_ALIGNMENT);
-        buttonPanel.add(login);
-        buttonPanel.add(logout);
-        buttonPanel.add(register);
-        buttonPanel.add(query);
-        buttonPanel.add(closeQueryResults);
-        buttonPanel.add(exit);
+        exitButton = new JButton("Exit");
+        exitButton.addActionListener(this);
+        exitButton.setActionCommand("EXIT");
 
 		customerVisitInfo = new JButton("Customer Visit Info");
 		customerVisitInfo.addActionListener(this);
@@ -137,7 +104,7 @@ class Frame extends JFrame
         queryButtonPanel.add(totalSalesInfo);
         queryButtonPanel.add(salesPeopleInfo);
 
-		getRootPane().setDefaultButton(login);
+		getRootPane().setDefaultButton(loginButton);
 
         mainPanel = new JPanel();
 
@@ -151,16 +118,11 @@ class Frame extends JFrame
 		GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
 
 		hGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(fieldPanel)
-            .addComponent(buttonPanel)
-            .addComponent(queryButtonPanel));
-            
+            .addComponent(queryButtonPanel));  
 		layout.setHorizontalGroup(hGroup);
         
 		GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
 
-		vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(fieldPanel));
-        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(buttonPanel));
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryButtonPanel));
 
 		layout.setVerticalGroup(vGroup);
@@ -176,63 +138,56 @@ class Frame extends JFrame
         //ImageIcon exitIcon = new ImageIcon("src/resources/exit.png");
         //TBA (:
 
-        JMenu fileMenu = new JMenu("Hello");
-        fileMenu.setMnemonic(KeyEvent.VK_F);
+        JMenu loginMenu = new JMenu("User");
+        loginMenu.setMnemonic(KeyEvent.VK_F);
+        loginMenu.add(Box.createHorizontalGlue());
+        menuBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        JMenu spaceMenu = new JMenu("                                                                    ");
+        spaceMenu.setEnabled(false);
 
-        JMenuItem eMenuItem = new JMenuItem("Exit"/*, exitIcon*/);
-        eMenuItem.setMnemonic(KeyEvent.VK_E);
-        eMenuItem.setToolTipText("Exit application");
-        eMenuItem.addActionListener((event) -> System.exit(0));
-
-        fileMenu.add(eMenuItem);
-        menuBar.add(fileMenu);
+        JMenuItem loginMenuItem = new JMenuItem("Login"/*, exitIcon*/);
+        loginMenuItem.setMnemonic(KeyEvent.VK_E);
+        loginMenuItem.setToolTipText("Login to account");
+        loginMenuItem.addActionListener((event) -> System.exit(0));
+        
+        loginMenu.add(loginMenuItem);
+        menuBar.add(loginButton);
+        menuBar.add(spaceMenu);
+        menuBar.add(loginMenu);
 
         setJMenuBar(menuBar);
         this.setVisible(true);
 
-		login.setEnabled(true);
-		logout.setEnabled(false);
-		register.setEnabled(false);
-        query.setEnabled(false);
-        customerVisitInfo.setEnabled(false);
-        testDrivenInfo.setEnabled(false);
-        topFiveVehiclesInfo.setEnabled(false);
-        totalSalesInfo.setEnabled(false);
-        salesPeopleInfo.setEnabled(false);
-
-        Toolkit tk;
-		Dimension d;
-
-		tk = Toolkit.getDefaultToolkit();
-		d = tk.getScreenSize();
-
-        int frameWidth = 840;
-        int frameHeight = 200;
-
-		setSize(frameWidth, frameHeight);
-		setLocation(d.width/2 - frameWidth/2, d.height/8 - frameHeight/2);
-		setTitle("Frame");
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);        
-        setResizable(false);
+        setupMainFrame();
     }
 
- 	public void logout()
-	{
+    void setupMainFrame(){
+        Toolkit tk;
+		Dimension d;
+		tk = Toolkit.getDefaultToolkit();
+		d = tk.getScreenSize();
+        int frameWidth = 940;
+        int frameHeight = 200;
+		setSize(frameWidth, frameHeight);
+		setLocation(d.width/2 - frameWidth/2, d.height/8 - frameHeight/2);
+		setTitle("Falcons Sports Cars");
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);        
+        setResizable(true);
+    }
+
+ 	public void logout(){
 		System.out.println("Frame: LOGOUT");
         
         boolean logoutSucceeded = true;
         
-        if (loggedIn || connectionHandler.conn != null)
-        {    
-            try
-            {
+        if (loggedIn || connectionHandler.conn != null){    
+            try{
                 connectionHandler.closeConnection();
                 connectionHandler.resetConnectionProperties();
             }
             
-            catch (Exception e)
-            {
+            catch (Exception e){
                 logoutSucceeded = false;
                 
                 JOptionPane.showMessageDialog(this, "Logout failed!", "Alert", JOptionPane.ERROR_MESSAGE);
@@ -240,21 +195,9 @@ class Frame extends JFrame
                 e.printStackTrace();
             }
             
-            if (logoutSucceeded)
-            {  
-                loggedIn = false;
-                
+            if (logoutSucceeded){  
+                loggedIn = false; 
                 queryFrame.setVisible(false);
-                
-                login.setEnabled(true);
-                logout.setEnabled(false);
-                register.setEnabled(false);
-                query.setEnabled(false);
-                customerVisitInfo.setEnabled(false);
-                testDrivenInfo.setEnabled(false);
-                topFiveVehiclesInfo.setEnabled(false);
-                totalSalesInfo.setEnabled(false);
-                salesPeopleInfo.setEnabled(false);
             }
         }
 
@@ -263,32 +206,24 @@ class Frame extends JFrame
 
 	}
 
-	public void register()
-	{
+	public void register(){
 		System.out.println("Frame: REGISTER");
         loginDialog = new LoginDialog();
 	}
     
-    public void displayQueryFrame()
-	{
+    public void displayQueryFrame(){
 		System.out.println("Frame: DISPLAY_QUERY_FRAME");
-
-		if (loggedIn)
-		{
+		if (loggedIn){
 			queryFrame.setVisible(true);
 		}
 	}
     
-    public void performQuery()
-    {
-        try
-        {
+    public void performQuery(){
+        try{
             System.out.println("Frame: PERFORM_QUERY");
             
             String query = queryFrame.getQuery();
-            
             ResultSet resultSet = connectionHandler.performQuery(query);
-            
             QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, query, resultSet);  
             
             queryResultsCount += 1;
@@ -297,16 +232,13 @@ class Frame extends JFrame
             queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
         }
             
-        catch (Exception e)
-        {
+        catch (Exception e){
             e.printStackTrace();
         }
 	}
     
-    public void performQueryAndDisplayResults(String query)
-    {
-        try
-        {            
+    public void performQueryAndDisplayResults(String query){
+        try{            
             ResultSet resultSet = connectionHandler.performQuery(query);
             
             QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, query, resultSet);  
@@ -317,74 +249,53 @@ class Frame extends JFrame
             queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
         }
             
-        catch (Exception e)
-        {
+        catch (Exception e){
             e.printStackTrace();
         }
     }
-    
-    public void clear()
-	{
-		System.out.println("Frame: CLEAR");
 
-        //usernameField.setText("");
-        //passwordField.setText("");
-	}
-
-    public void exit()
-    {
+    public void exit(){
 		System.out.println("Frame: EXIT");
-        
-        // if (loggedIn || connectionHandler.conn != null)
-		// {
-		// 	logout();
-		// }
-
+        // if (loggedIn || connectionHandler.conn != null){
+        // 	logout();
+        // }
 		System.exit(0);
-
-        //navigationBar = new NavigationBar();
     }
 
-    public void removeQueryResultsFrame(QueryResultsFrame queryResultsFrameToRemove)
-    {
+    public void removeQueryResultsFrame(QueryResultsFrame queryResultsFrameToRemove){
         System.out.println("Frame: QUERY_RESULTS_FRAME_CLOSING");
-        
         queryResultsFrameVector.removeElement(queryResultsFrameToRemove);
     }
-    
-    public void closeQueryResultsFrames()
-    {
-        System.out.println("Frame: QUERY_RESULTS_FRAME_CLOSING");
 
+    public void login(){
+        System.out.println("Frame: LOGIN_PRESSED");
         loginDialog = new LoginDialog();
-
-        
-        // for (QueryResultsFrame x : queryResultsFrameVector)
-        //     x.dispose();
-        
-        // queryResultsCount = 0;        
-        // queryResultsFrameVector.removeAllElements();        
     }
     
-    public void getCustomerVisitInfo()
-    {
+    public void closeQueryResultsFrames(){
+        System.out.println("Frame: QUERY_RESULTS_FRAME_CLOSING");
+
+        for (QueryResultsFrame x : queryResultsFrameVector)
+            x.dispose();
+        
+        queryResultsCount = 0;        
+        queryResultsFrameVector.removeAllElements();        
+    }
+    
+    public void getCustomerVisitInfo(){
         System.out.println("Frame: CUSTOMER_VISIT_INFO");
         
         String customerID = (JOptionPane.showInputDialog(this, "Enter the customer's ID:")).trim();
                                 
-        if (!customerID.equals(""))
-        {
-            try
-            {
+        if (!customerID.equals("")){
+            try{
                 String query = "SELECT CI.id, CI.first_name, CI.last_name, CI.customer_notes, CTDV.dealership_number, D.street, D.zip, CTDV.stock_number, CTDV.datetime " +
                                 "FROM customers_info CI, customers_test_driven_vehicles CTDV, dealerships D "  + 
                                 "WHERE CI.id = \'" + customerID + "\' AND CI.id = CTDV.id AND CTDV.dealership_number = D.dealership_number";
-                
                 performQueryAndDisplayResults(query);
             }
                 
-            catch (Exception e)
-            {
+            catch (Exception e){
                 e.printStackTrace();
             }        
         }
@@ -393,8 +304,7 @@ class Frame extends JFrame
             JOptionPane.showMessageDialog(this, "You cannot enter an empty string for the customer's ID!", "Alert", JOptionPane.INFORMATION_MESSAGE);
     }
     
-    public void getTestDrivenVehicles()
-    {
+    public void getTestDrivenVehicles(){
         System.out.println("Frame: TEST_DRIVEN_VEHICLES");
         
         String response = (JOptionPane.showInputDialog(this, "Enter the make and model separated by a space:")).trim();
@@ -403,8 +313,7 @@ class Frame extends JFrame
         String make = components[0];
         String model = components[components.length - 1];
         
-        if (!(make.equals("") && model.equals("")))
-        {
+        if (!(make.equals("") && model.equals(""))){
             String query = "SELECT D.dealership_number, C.id, P.first_name, P.last_name, TD.stock_number, V.make, V.model, TD.datetime " +
                             "FROM customers C, people P, sales_emps E, test_drives TD, vehicles V, dealerships D " +
                             "WHERE V.make = \'" + make + "\' AND V.model = \'" + model + "\' AND V.stock_number = TD.stock_number AND " +
@@ -417,33 +326,27 @@ class Frame extends JFrame
             JOptionPane.showMessageDialog(this, "You cannot enter an empty string for the make and model!", "Alert", JOptionPane.INFORMATION_MESSAGE);
     }
         
-    public void getTopFiveVehicles()
-    {
+    public void getTopFiveVehicles(){
         System.out.println("Frame: TOP_FIVE_VEHICLES");                                
 
-        try
-        {
+        try{
             String query = "SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new " +
                             "FROM vehicles V, purchase_vehicle PV " +
                             "WHERE PV.stock_number = V.stock_number " +
                             "GROUP BY V.make, V.model, V.year, V.new " +
                             "ORDER BY num_sold_vehicles DESC";
-            
             performQueryAndDisplayResults(query);
         }
             
-        catch (Exception e)
-        {
+        catch (Exception e){
             e.printStackTrace();
         }        
     }
         
-    public void getTotalDealershipSales()
-    {
+    public void getTotalDealershipSales(){
         System.out.println("Frame: TOTAL_DEALERSHIP_SALES");                                
 
-        try
-        {
+        try{
             String query = "SELECT D.dealership_number, SUM(V.price) AS total_amount_sold " +
                             "FROM vehicles V, purchase_vehicle PV, dealerships D " +
                             "WHERE PV.stock_number = V.stock_number AND V.dealership_number = D.dealership_number AND MONTH(V.sale_datetime) = MONTH(NOW()) " +
@@ -453,41 +356,36 @@ class Frame extends JFrame
             performQueryAndDisplayResults(query);
         }
             
-        catch (Exception e)
-        {
+        catch (Exception e){
             e.printStackTrace();
         }        
     }
         
-    public void getSalesEmpsInfo()
-    {
+    public void getSalesEmpsInfo(){
         System.out.println("Frame: SALES_EMPS_INFO");                                
 
-        try
-        {
+        try{
             String query = "SELECT SEI.id, SEI.dealership_number, SEI.first_name, SEI.last_name, SEI.email, SEI.street, SEI.zip, SEI.phone_number, TDSE.test_drives, SSE.sales, CSE.commissions_total " +
                             "FROM sales_emps_info SEI, test_drives_per_sales_emp_current_year TDSE, sales_per_sales_emp_current_year SSE, commissions_per_sales_emp_current_year CSE " +
                             "WHERE SEI.id = TDSE.id AND SEI.id = SSE.id AND SEI.id = CSE.id " +
                             "ORDER BY num_sold_vehicles DESC " +
                             "LIMIT 0, 5";
-            
+            // order by sum of prices
             performQueryAndDisplayResults(query);
         }
             
-        catch (Exception e)
-        {
+        catch (Exception e){
             e.printStackTrace();
         }        
     }
 
-	public void actionPerformed(ActionEvent e)
-	{
+	public void actionPerformed(ActionEvent e){
 		String cmd = e.getActionCommand();
 
-		try
-		{
-            if (cmd.equals("LOGIN"))
-				System.out.println("hi login button was pressed.");
+		try{
+            if (cmd.equals("LOGIN")){
+                login();
+            }
 
 			else if (cmd.equals("LOGOUT"))
 				logout();
@@ -526,52 +424,40 @@ class Frame extends JFrame
                 getSalesEmpsInfo();
 		}
 
-		catch (Exception x)
-		{
+		catch (Exception x){
 			x.printStackTrace();
 
 			System.out.println("Frame: actionPerformed(): Exception");
 		}
 	}
 
-    public void windowActivated(WindowEvent e)
-	{
+    public void windowActivated(WindowEvent e){
 	}
 
-	public void windowClosed(WindowEvent e)
-	{
+	public void windowClosed(WindowEvent e){
 	}
 
-	public void windowClosing(WindowEvent e)
-	{        
+	public void windowClosing(WindowEvent e){        
 		System.out.println("Frame: windowClosing");
-
-		// if (loggedIn || connectionHandler.conn != null)
-		// {
+		// if (loggedIn || connectionHandler.conn != null){
 		// 	logout();
-		// }
-        
+		// } 
         System.exit(0);
 	}
 
-	public void windowDeactivated(WindowEvent e)
-	{
+	public void windowDeactivated(WindowEvent e){
 	}
 
-	public void windowDeiconified(WindowEvent e)
-	{
+	public void windowDeiconified(WindowEvent e){
 	}
 
-	public void windowIconified(WindowEvent e)
-	{
+	public void windowIconified(WindowEvent e){
 	}
 
-	public void windowOpened(WindowEvent e)
-	{
+	public void windowOpened(WindowEvent e){
 	}
 
-	public static void main(String[] x)
-	{
+	public static void main(String[] x){
 		new Frame();
 	}
 }
