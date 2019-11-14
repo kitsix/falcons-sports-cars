@@ -211,11 +211,8 @@ class Frame extends JFrame
 	}
     
     public void performQueryAndDisplayResults(String query){
-        System.out.println("** attempting to perform the query....");
-        try{  
-            if(connectionHandler == null)
-                System.out.println("oh no..");          
-            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);        
+        try{
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(queryFrame.getQuery());        
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
             
             QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
@@ -248,8 +245,6 @@ class Frame extends JFrame
         System.out.println("Frame: LOGIN_PRESSED");
         loginDialog = new LoginDialog(this);
         this.connectionHandler = loginDialog.getConnectionHandler();
-        if(connectionHandler == null)
-            System.out.println("idk why its null");
     }
     
     public void closeQueryResultsFrames(){

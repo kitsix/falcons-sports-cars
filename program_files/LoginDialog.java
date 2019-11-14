@@ -103,19 +103,19 @@ implements ActionListener
         }
     } 
 
-    public void login(ConnectionHandler connectionHandler){
-        boolean loggedIn=false;
-        boolean loginSucceeded = true;
-        ResultSet resultSet = null;
-        PreparedStatement pstatement = null;
-            
+public void login(ConnectionHandler connectionHandler){
+    boolean loggedIn=false;
+    boolean loginSucceeded = true;
+    ResultSet resultSet = null;
+    PreparedStatement pstatement = null;
+        
         if (!loggedIn || connectionHandler.conn == null){    
             try{
                 // connectionHandler.setConnectionProperties("java_test_user", "pass", "127.0.0.1", 3306, "java_db_test", "MySQL"); // This is for my local database.
                 // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
                 // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
                 //connectionHandler.setConnectionProperties(usernameTF.getText(), new String(passwordTF.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
-                connectionHandler.setConnectionProperties("root", "password", "127.0.0.1", 3306, "db_project", "MySQL"); // Again, this is for my test setup.
+                connectionHandler.setConnectionProperties("root", "littlewhale", "localhost", 3306, "falconcars", "MySQL"); // Again, this is for my test setup.
                 connectionHandler.createJdbcUrl();
                 connectionHandler.establishConnection();
 
@@ -150,8 +150,8 @@ implements ActionListener
                 JOptionPane.showMessageDialog(this, "Login failed!", "Alert", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }
-    public ConnectionHandler getConnectionHandler(){
-        return this.connectionHandler;
-    }
+}
+public ConnectionHandler getConnectionHandler(){
+    return this.connectionHandler;
+}
 }
