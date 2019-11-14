@@ -13,7 +13,7 @@ implements ActionListener
     JPasswordField          passwordTF;
     JLabel                  usernameLabel, passwordLabel;
     JPanel                  myMainPanel, buttonP;
-    JButton                 registerButton, loginButton, exitButton;
+    JButton                 loginButton, exitButton;
     ConnectionHandler       connectionHandler;
     Frame                   mainFrame;
     String                  tempUserName;
@@ -25,10 +25,6 @@ implements ActionListener
         this.mainFrame = frame;
         
         buildBasicGui(); 
-        
-        registerButton = new JButton("Register");
-        registerButton.setActionCommand("REGISTER BUTTON");
-        registerButton.addActionListener(this);
 
         loginButton = new JButton("Login");
         loginButton.setActionCommand("LOGIN BUTTON");
@@ -39,7 +35,6 @@ implements ActionListener
         exitButton.addActionListener(this);
         
         buttonP = new JPanel(new FlowLayout());
-        buttonP.add(registerButton);
         buttonP.add(loginButton);
         buttonP.add(exitButton);
         add (buttonP, BorderLayout.SOUTH);
@@ -89,12 +84,8 @@ implements ActionListener
     public void actionPerformed (ActionEvent e){
         String username = usernameTF.getText().trim();
         String password = new String(passwordTF.getPassword());
-        
-        if (e.getActionCommand().equals("REGISTER BUTTON")){
-            System.out.println("registering");
-        }
-        
-        else if (e.getActionCommand().equals("LOGIN BUTTON")){
+    
+        if (e.getActionCommand().equals("LOGIN BUTTON")){
             login(this.connectionHandler);
         }
         else if (e.getActionCommand().equals("EXIT")){

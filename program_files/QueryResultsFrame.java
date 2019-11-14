@@ -27,8 +27,8 @@ class QueryResultsFrame extends JFrame
 
         try{   
             queryArea = new JTextArea(pStatement.toString());
-            queryArea.setEditable(false);
-            queryAreaScrollPane = new JScrollPane(queryArea);        
+			queryArea.setEditable(false);
+			//queryAreaScrollPane = new JScrollPane(queryArea);      
      
             Vector columnNames = new Vector<Object>();
             Vector rows = new Vector<Object>();
@@ -57,7 +57,6 @@ class QueryResultsFrame extends JFrame
         }
 
 		mainPanel = new JPanel();
-
 		layout = new GroupLayout(mainPanel);
 		mainPanel.setLayout(layout);
 		layout.setAutoCreateGaps(true);
@@ -66,14 +65,14 @@ class QueryResultsFrame extends JFrame
 		GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
 
 		hGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-			.addComponent(queryAreaScrollPane)
+			//.addComponent(queryAreaScrollPane)
             .addComponent(queryResultsTableScrollPane));
 
 		layout.setHorizontalGroup(hGroup);
 
 		GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
 
-		vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryAreaScrollPane));
+		//vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryAreaScrollPane));
 		vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryResultsTableScrollPane));
 
         layout.setVerticalGroup(vGroup);
