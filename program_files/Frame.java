@@ -212,7 +212,7 @@ class Frame extends JFrame
     
     public void performQueryAndDisplayResults(String query){
         try{
-            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(queryFrame.getQuery());        
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);        
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
             
             QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
