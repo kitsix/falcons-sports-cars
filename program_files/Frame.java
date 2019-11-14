@@ -1,8 +1,16 @@
 import java.sql.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
+import java.awt.Image;
+
 
 // You will need Connector/J installed on your system and you will need to specify the installation path when you run the program.
 // I do this through command line as follows -- the general format is as follows:
@@ -29,7 +37,7 @@ import java.util.*;
 class Frame extends JFrame
 			implements ActionListener, WindowListener
 { 
-    JButton loginButton, exitButton;
+    JButton loginButton, exitButton, testButton;
     JPanel mainPanel;
     JMenu loginMenu;
     JMenuItem customerVisitsMenuItem, topFiveVehiclesMenuItem, testDriveMenuItem, salesMenuItem, employeeInformationMenuItem;
@@ -56,9 +64,13 @@ class Frame extends JFrame
         exitButton.addActionListener(this);
         exitButton.setActionCommand("EXIT");
 
+        testButton = new JButton("Image");
+        testButton.addActionListener(this);
+        testButton.setActionCommand("IMAGE");
 		getRootPane().setDefaultButton(loginButton);
 
         mainPanel = new JPanel();
+        mainPanel.add(testButton);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);
@@ -150,13 +162,11 @@ class Frame extends JFrame
             connectionHandler.setConnectionProperties("root", "littlewhale", "localhost", 3306, "falconcars", "MySQL"); // Again, this is for my test setup.
             connectionHandler.createJdbcUrl();
             connectionHandler.establishConnection();
-
         }
         catch (Exception e){
             JOptionPane.showMessageDialog(this, "Connection failed!", "Alert", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-        }
-        
+        }   
     }
 
  	public void logout(){
@@ -193,11 +203,6 @@ class Frame extends JFrame
         else
 			JOptionPane.showMessageDialog(this, "You are already logged out!", "Alert", JOptionPane.INFORMATION_MESSAGE);
 
-	}
-
-	public void register(){
-		System.out.println("Frame: REGISTER");
-        loginDialog = new LoginDialog(this, this.connectionHandler);
 	}
     
     public void displayQueryFrame(){
@@ -379,14 +384,84 @@ class Frame extends JFrame
 			else if (cmd.equals("LOGOUT"))
 				logout();
         	else if (cmd.equals("EXIT"))
-            	exit();
+                exit();
+            else if (cmd.equals("IMAGE")){
+                System.out.println("image button has been pressed..");
+                picture();
+            }
 		}
 
 		catch (Exception x){
 			x.printStackTrace();
 			System.out.println("Frame: actionPerformed(): Exception");
 		}
-	}
+    }
+    
+    public void picture(){
+        System.out.println("hello you are now in the image function....");
+
+        try { // table name:image and second image is field name
+
+            String query = "SELECT V.image " +
+                            "FROM vehicles V ";
+                            //"WHERE V.stock_number = '2001' ";
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);
+            ResultSet resultSet = connectionHandler.performQuery(pstatement);
+            
+            queryResultsCount += 1;
+
+            if(resultSet.next()){
+                byte[] img = resultSet.getBytes("Image");
+
+                //Resize The ImageIcon
+                ImageIcon image = new ImageIcon(img);
+                Image im = image.getImage();
+                if(im == null){
+                    System.out.println(")))))):");
+                }
+                JPanel imagePanel = new JPanel(){
+                    @Override
+                    protected void paintComponent(Graphics g) {
+                        super.paintComponent(g);
+                        g.drawImage(im, 50, 50, 100, 100, this);
+                    }
+                };
+                imagePanel.repaint();
+                this.add(imagePanel);
+                imagePanel.repaint();    
+            }
+            else{
+                System.out.println("error w image");
+            }
+    
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // **********
+        // try{
+        // //URL url = new URL("https://cdn3.iconfinder.com/data/icons/nature-animals/512/cat_A-512.png");
+        // System.out.println("in the try in the picture method");
+        // final BufferedImage image = ImageIO.read(new File("squid.jpg"));        
+        // if(image == null){
+        //     System.out.println(")))))):");
+        // }
+        // JPanel imagePanel = new JPanel(){
+        //     @Override
+        //     protected void paintComponent(Graphics g) {
+        //         super.paintComponent(g);
+        //         g.drawImage(image, 50, 50, 100, 100, this);
+        //     }
+        // };
+        // imagePanel.repaint();
+        // this.add(imagePanel);
+        // imagePanel.repaint();
+        // }
+        // catch(IOException io){
+        //     System.out.println("whoops...");
+        // }
+    }
 
     public void windowActivated(WindowEvent e){
 	}
