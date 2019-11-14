@@ -1,4 +1,3 @@
-
 CREATE TABLE Addresses(
 	street VARCHAR(100),
 	zip VARCHAR(10),
@@ -9,6 +8,7 @@ CREATE TABLE Addresses(
 
 CREATE TABLE Dealerships(
 	dealership_number INT PRIMARY KEY,
+    dealership_name VARCHAR(100) NOT NULL,
 	street VARCHAR(100) NOT NULL,
 	zip VARCHAR(10) NOT NULL,
 	FOREIGN KEY (street, zip) REFERENCES Addresses(street, zip)
