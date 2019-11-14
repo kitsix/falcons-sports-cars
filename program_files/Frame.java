@@ -29,9 +29,10 @@ import java.util.*;
 class Frame extends JFrame
 			implements ActionListener, WindowListener
 { 
-    JButton loginButton, logoutButton, registerButton, queryButton, clearButton, closeQueryResultsButton, exitButton;
+    JButton loginButton, exitButton;
     JPanel mainPanel;
     JMenu loginMenu;
+    JMenuItem customerVisitsMenuItem, topFiveVehiclesMenuItem, testDriveMenuItem, salesMenuItem, employeeInformationMenuItem;
 	GroupLayout layout;
     QueryFrame queryFrame; 
     ConnectionHandler connectionHandler;
@@ -50,22 +51,6 @@ class Frame extends JFrame
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(this);
 		loginButton.setActionCommand("LOGIN");
-
-		logoutButton = new JButton("Logout");
-		logoutButton.addActionListener(this);
-		logoutButton.setActionCommand("LOGOUT");
-        
-        queryButton = new JButton("Query");
-        queryButton.addActionListener(this);
-        queryButton.setActionCommand("DISPLAY_QUERY_FRAME");
-        
-        clearButton = new JButton("Clear");
-        clearButton.addActionListener(this);
-        clearButton.setActionCommand("CLEAR");
-        
-        closeQueryResultsButton = new JButton("Close Query Results");
-        closeQueryResultsButton.addActionListener(this);
-        closeQueryResultsButton.setActionCommand("CLOSE_QUERY_RESULTS_FRAMES");
         
         exitButton = new JButton("Exit");
         exitButton.addActionListener(this);
@@ -93,27 +78,27 @@ class Frame extends JFrame
         JMenu spaceMenu2 = new JMenu("                                                                                                              ");
         spaceMenu.setEnabled(false);
 
-        JMenuItem customerVisitsMenuItem = new JMenuItem("Customer Visits"/*, exitIcon*/);
+        customerVisitsMenuItem = new JMenuItem("Customer Visits"/*, exitIcon*/);
         customerVisitsMenuItem.setMnemonic(KeyEvent.VK_E);
         customerVisitsMenuItem.setToolTipText("Display customer visit information");
         customerVisitsMenuItem.addActionListener((event) -> getCustomerVisitInfo());
 
-        JMenuItem topFiveVehiclesMenuItem = new JMenuItem("Bestsellers");
+        topFiveVehiclesMenuItem = new JMenuItem("Bestsellers");
         topFiveVehiclesMenuItem.setMnemonic(KeyEvent.VK_E);
         topFiveVehiclesMenuItem.setToolTipText("Display top five vehicles");
         topFiveVehiclesMenuItem.addActionListener((event) -> getTopFiveVehicles());
 
-        JMenuItem testDriveMenuItem = new JMenuItem("Testdrives");
+        testDriveMenuItem = new JMenuItem("Testdrives");
         testDriveMenuItem.setMnemonic(KeyEvent.VK_E);
         testDriveMenuItem.setToolTipText("Display testdrive information");
         testDriveMenuItem.addActionListener((event) -> getTestDrivenVehicles());
 
-        JMenuItem salesMenuItem = new JMenuItem("Sales");
+        salesMenuItem = new JMenuItem("Sales");
         salesMenuItem.setMnemonic(KeyEvent.VK_E);
         salesMenuItem.setToolTipText("Display dealership sales information");
         salesMenuItem.addActionListener((event) -> getTotalDealershipSales());
 
-        JMenuItem employeeInformationMenuItem = new JMenuItem("Employee Information");
+        employeeInformationMenuItem = new JMenuItem("Employee Information");
         employeeInformationMenuItem.setMnemonic(KeyEvent.VK_E);
         employeeInformationMenuItem.setToolTipText("Display employees information");
         employeeInformationMenuItem.addActionListener((event) -> getSalesEmpsInfo());
@@ -381,44 +366,10 @@ class Frame extends JFrame
                 this.loginButton.setText("Logout");
                 this.loginButton.setActionCommand("LOGOUT");
             }
-
 			else if (cmd.equals("LOGOUT"))
 				logout();
-
-			else if (cmd.equals("REGISTER"))
-				register();
-
-            else if (cmd.equals("DISPLAY_QUERY_FRAME"))
-				displayQueryFrame();
-            
-            else if (cmd.equals("PERFORM_QUERY"))
-				performQuery();
-
         	else if (cmd.equals("EXIT"))
             	exit();
-            
-            else if (cmd.equals("QUERY_RESULTS_FRAME_CLOSING"))
-                removeQueryResultsFrame((QueryResultsFrame)e.getSource());
-            
-            else if (cmd.equals("CLOSE_QUERY_RESULTS_FRAMES"))
-                closeQueryResultsFrames();
-            
-            else if (cmd.equals("CUSTOMER_VISIT_INFO"))
-                getCustomerVisitInfo();
-            
-            else if (cmd.equals("TEST_DRIVEN_VEHICLES"))
-                getTestDrivenVehicles();
-            
-            else if (cmd.equals("TOP_FIVE_VEHICLES")){
-                System.out.println("Top Five command gotten...");
-                getTopFiveVehicles();
-            }
-            
-            else if (cmd.equals("TOTAL_DEALERSHIP_SALES"))
-                getTotalDealershipSales();
-            
-            else if (cmd.equals("SALES_EMPS_INFO"))
-                getSalesEmpsInfo();
 		}
 
 		catch (Exception x){
