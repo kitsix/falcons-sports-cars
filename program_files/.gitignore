@@ -1,3 +1,6 @@
+# Ignore compiled java class files
 *.class
+
+# Ignore Mac system files
 .DS_Store
-*/.DS_Store
+**/.DS_Store
