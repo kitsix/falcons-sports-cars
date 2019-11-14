@@ -14,10 +14,12 @@ implements ActionListener
     JPanel                  myMainPanel, buttonP;
     JButton                 registerButton, loginButton, exitButton;
     ConnectionHandler       connectionHandler;
+    JFrame                  mainFrame;
 
     LoginDialog(JFrame frame, ConnectionHandler connectionHandler){
 
         this.connectionHandler = connectionHandler;
+        this.mainFrame = frame;
         
         buildBasicGui(); 
         
@@ -125,7 +127,6 @@ public void login(ConnectionHandler connectionHandler){
             
             if (loginSucceeded){            
                 loggedIn = true;
-                System.out.println("login was successfullllll (:");
                 dispose();
             }
             else {

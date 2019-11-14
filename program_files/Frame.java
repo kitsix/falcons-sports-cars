@@ -3,8 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.sql.*;
-import javax.sql.*;
 
 // You will need Connector/J installed on your system and you will need to specify the installation path when you run the program.
 // I do this through command line as follows -- the general format is as follows:
@@ -56,10 +54,6 @@ class Frame extends JFrame
 		logoutButton = new JButton("Logout");
 		logoutButton.addActionListener(this);
 		logoutButton.setActionCommand("LOGOUT");
-
-		registerButton = new JButton("Register");
-		registerButton.addActionListener(this);
-		registerButton.setActionCommand("REGISTER");
         
         queryButton = new JButton("Query");
         queryButton.addActionListener(this);
@@ -101,6 +95,10 @@ class Frame extends JFrame
 
         mainPanel = new JPanel();
         mainPanel.add(topFiveVehiclesInfo);
+        mainPanel.add(customerVisitInfo);
+        mainPanel.add(testDrivenInfo);
+        mainPanel.add(totalSalesInfo);
+        mainPanel.add(salesPeopleInfo);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);
@@ -111,7 +109,7 @@ class Frame extends JFrame
         //ImageIcon exitIcon = new ImageIcon("src/resources/exit.png");
         //TBA (:
 
-        JMenu loginMenu = new JMenu("User");
+        JMenu loginMenu = new JMenu("Guest");
         loginMenu.setMnemonic(KeyEvent.VK_F);
         loginMenu.add(Box.createHorizontalGlue());
         menuBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -120,9 +118,9 @@ class Frame extends JFrame
         JMenu spaceMenu2 = new JMenu("                                                                                                              ");
         spaceMenu.setEnabled(false);
 
-        JMenuItem loginMenuItem = new JMenuItem("Login"/*, exitIcon*/);
+        JMenuItem loginMenuItem = new JMenuItem("Query"/*, exitIcon*/);
         loginMenuItem.setMnemonic(KeyEvent.VK_E);
-        loginMenuItem.setToolTipText("Login to account");
+        loginMenuItem.setToolTipText("Test a query");
         loginMenuItem.addActionListener((event) -> System.exit(0));
         
         loginMenu.add(loginMenuItem);
@@ -233,7 +231,7 @@ class Frame extends JFrame
     
     public void performQueryAndDisplayResults(String query){
         try{
-            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(queryFrame.getQuery());        
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);        
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
             
             QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
@@ -265,6 +263,8 @@ class Frame extends JFrame
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
         loginDialog = new LoginDialog(this, this.connectionHandler);
+        this.loginButton.setText("Logout");
+        this.loginButton.setActionCommand("LOGOUT");
     }
     
     public void closeQueryResultsFrames(){
@@ -378,6 +378,8 @@ class Frame extends JFrame
 		try{
             if (cmd.equals("LOGIN")){
                 login();
+                this.loginButton.setText("Logout");
+                this.loginButton.setActionCommand("LOGOUT");
             }
 
 			else if (cmd.equals("LOGOUT"))
