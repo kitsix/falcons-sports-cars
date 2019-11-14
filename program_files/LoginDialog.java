@@ -3,10 +3,15 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.awt.Dialog;
 import javax.swing.JDialog;
 import javax.swing.GroupLayout.*;
-import java.lang.Object;
 
 class LoginDialog  extends  JDialog
 implements ActionListener
@@ -100,6 +105,8 @@ public void login(){
     ConnectionHandler connectionHandler;
     connectionHandler = new ConnectionHandler();
     boolean loginSucceeded = true;
+    ResultSet resultSet = null;
+    PreparedStatement pstatement = null;
         
         if (!loggedIn || connectionHandler.conn == null){    
             try{
@@ -107,10 +114,25 @@ public void login(){
                 // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
                 // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
                 //connectionHandler.setConnectionProperties(usernameTF.getText(), new String(passwordTF.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
-                connectionHandler.setConnectionProperties("root", "littlewhale", "localhost", 3306, "falconcars", "MySQL"); // Again, this is for my test setup.
+                connectionHandler.setConnectionProperties("root", "password", "127.0.0.1", 3306, "db_project", "MySQL"); // Again, this is for my test setup.
                 connectionHandler.createJdbcUrl();
                 connectionHandler.establishConnection();
+
+                pstatement = connectionHandler.getConnection().prepareStatement("SELECT role FROM sales_emps S WHERE S.username = ? AND S.password = ?");
+                pstatement.clearParameters();
+                pstatement.setString(1, "" + usernameTF.getText() + "");
+                pstatement.setString(2, new String(passwordTF.getPassword()));
+
+                resultSet = connectionHandler.performQuery(pstatement);
+
+                //process query Results
+                //unsure if this is the best way to check if anything was returned
+                if(!resultSet.next()) {
+                    loginSucceeded = false;
+                }
+
             }
+            
             
             catch (Exception e){
                 loginSucceeded = false;
@@ -121,9 +143,12 @@ public void login(){
             if (loginSucceeded){            
                 loggedIn = true;
                 System.out.println("login was successfullllll (:");
+                dispose();
             }
-            else
-			JOptionPane.showMessageDialog(this, "You are already logged in!", "Alert", JOptionPane.INFORMATION_MESSAGE);
+            else {
+                JOptionPane.showMessageDialog(this, "Login failed!", "Alert", JOptionPane.ERROR_MESSAGE);
+            }
+			// JOptionPane.showMessageDialog(this, "You are already logged in!", "Alert", JOptionPane.INFORMATION_MESSAGE);
         }
-    }
+}
 }

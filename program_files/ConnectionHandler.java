@@ -115,12 +115,11 @@ class ConnectionHandler
         System.out.println("JdbcUrl = \"" + JdbcUrl + "\" | username = \"" + username + "\" | password = \"" + password + "\"");
     }
     
-    public ResultSet performQuery(String query) throws Exception
+    public ResultSet performQuery(PreparedStatement pstatement) throws Exception
     {
-        System.out.println("ConnectionHandler: performQuery: query = " + query);
-        
-        Statement statement = conn.createStatement();        
-        ResultSet resultSet = statement.executeQuery(query);
+        System.out.println("ConnectionHandler: performQuery: query = " + pstatement);
+            
+        ResultSet resultSet = pstatement.executeQuery();
                 
         // printResultSet(resultSet);
         
@@ -193,6 +192,10 @@ class ConnectionHandler
             
             System.out.println("");
         }
+    }
+
+    public Connection getConnection() {
+        return conn;
     }
     
     // Test main function

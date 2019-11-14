@@ -25,7 +25,7 @@ class QueryResultsFrame extends JFrame
 
     GroupLayout layout;
 
-    QueryResultsFrame(Frame host, String query, ResultSet resultSet)
+    QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet)
 	{        
         this.host = host;
         this.addWindowListener(this);
@@ -34,12 +34,12 @@ class QueryResultsFrame extends JFrame
 
         try
         {   
-            queryArea = new JTextArea(query);
+            queryArea = new JTextArea(pStatement.toString());
             queryArea.setEditable(false);
             queryAreaScrollPane = new JScrollPane(queryArea);        
      
-            Vector<Object> columnNames = new Vector<Object>();
-            Vector<Object> rows = new Vector<Object>();
+            Vector columnNames = new Vector<Object>();
+            Vector rows = new Vector<Object>();
             
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             

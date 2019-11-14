@@ -198,9 +198,9 @@ class Frame extends JFrame
         try{
             System.out.println("Frame: PERFORM_QUERY");
             
-            String query = queryFrame.getQuery();
-            ResultSet resultSet = connectionHandler.performQuery(query);
-            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, query, resultSet);  
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(queryFrame.getQuery());
+            ResultSet resultSet = connectionHandler.performQuery(pstatement);
+            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
             
             queryResultsCount += 1;
             
@@ -214,10 +214,11 @@ class Frame extends JFrame
 	}
     
     public void performQueryAndDisplayResults(String query){
-        try{            
-            ResultSet resultSet = connectionHandler.performQuery(query);
+        try{
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(queryFrame.getQuery());        
+            ResultSet resultSet = connectionHandler.performQuery(pstatement);
             
-            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, query, resultSet);  
+            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
             
             queryResultsCount += 1;
             
