@@ -14,9 +14,11 @@ implements ActionListener
     JPanel                  myMainPanel, buttonP;
     JButton                 registerButton, loginButton, exitButton;
     ConnectionHandler       connectionHandler;
-    JFrame                  mainFrame;
+    Frame                   mainFrame;
+    String                  tempUserName;
+    boolean                 loggedIn;
 
-    LoginDialog(JFrame frame, ConnectionHandler connectionHandler){
+    LoginDialog(Frame frame, ConnectionHandler connectionHandler){
 
         this.connectionHandler = connectionHandler;
         this.mainFrame = frame;
@@ -126,7 +128,9 @@ public void login(ConnectionHandler connectionHandler){
             }
             
             if (loginSucceeded){            
-                loggedIn = true;
+                this.mainFrame.loginMenu.setText(usernameTF.getText());
+                this.mainFrame.loginButton.setText("Logout");
+                this.mainFrame.loginButton.setActionCommand("LOGOUT");
                 dispose();
             }
             else {

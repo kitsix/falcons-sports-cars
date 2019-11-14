@@ -29,9 +29,10 @@ import java.util.*;
 class Frame extends JFrame
 			implements ActionListener, WindowListener
 { 
-	JButton loginButton, logoutButton, registerButton, queryButton, clearButton, closeQueryResultsButton, exitButton;    
+    JButton loginButton, logoutButton, registerButton, queryButton, clearButton, closeQueryResultsButton, exitButton;
     JPanel mainPanel;
     JButton customerVisitInfo, testDrivenInfo, topFiveVehiclesInfo, totalSalesInfo, salesPeopleInfo;
+    JMenu loginMenu;
 	GroupLayout layout;
     QueryFrame queryFrame; 
     ConnectionHandler connectionHandler;
@@ -109,7 +110,7 @@ class Frame extends JFrame
         //ImageIcon exitIcon = new ImageIcon("src/resources/exit.png");
         //TBA (:
 
-        JMenu loginMenu = new JMenu("Guest");
+        loginMenu = new JMenu("Guest");
         loginMenu.setMnemonic(KeyEvent.VK_F);
         loginMenu.add(Box.createHorizontalGlue());
         menuBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -190,6 +191,8 @@ class Frame extends JFrame
             if (logoutSucceeded){  
                 loggedIn = false; 
                 queryFrame.setVisible(false);
+                this.loginButton.setText("Login");
+                this.loginButton.setActionCommand("LOGIN");
             }
         }
 
@@ -263,8 +266,12 @@ class Frame extends JFrame
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
         loginDialog = new LoginDialog(this, this.connectionHandler);
-        this.loginButton.setText("Logout");
-        this.loginButton.setActionCommand("LOGOUT");
+        if(loggedIn == true){
+            this.loginButton.setText("Logout");
+            this.loginButton.setActionCommand("LOGOUT"); 
+            this.loginMenu.setName(loginDialog.tempUserName);
+        }
+        
     }
     
     public void closeQueryResultsFrames(){
