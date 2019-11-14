@@ -100,10 +100,7 @@ class Frame extends JFrame
 		getRootPane().setDefaultButton(loginButton);
 
         mainPanel = new JPanel();
-		layout = new GroupLayout(mainPanel);
-        layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
-		mainPanel.setLayout(layout);
+        mainPanel.add(topFiveVehiclesInfo);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);
@@ -214,7 +211,10 @@ class Frame extends JFrame
 	}
     
     public void performQueryAndDisplayResults(String query){
-        try{            
+        System.out.println("** attempting to perform the query....");
+        try{  
+            if(connectionHandler == null)
+                System.out.println("oh no..");          
             ResultSet resultSet = connectionHandler.performQuery(query);
             
             QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, query, resultSet);  
@@ -246,6 +246,9 @@ class Frame extends JFrame
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
         loginDialog = new LoginDialog(this);
+        this.connectionHandler = loginDialog.getConnectionHandler();
+        if(connectionHandler == null)
+            System.out.println("idk why its null");
     }
     
     public void closeQueryResultsFrames(){
@@ -303,8 +306,7 @@ class Frame extends JFrame
     }
         
     public void getTopFiveVehicles(){
-        System.out.println("Frame: TOP_FIVE_VEHICLES");                                
-
+        System.out.println("Frame: TOP_FIVE_VEHICLES ---- within method");                                
         try{
             String query = "SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new " +
                             "FROM vehicles V, purchase_vehicle PV " +
@@ -312,8 +314,7 @@ class Frame extends JFrame
                             "GROUP BY V.make, V.model, V.year, V.new " +
                             "ORDER BY num_sold_vehicles DESC";
             performQueryAndDisplayResults(query);
-        }
-            
+        }   
         catch (Exception e){
             e.printStackTrace();
         }        
@@ -390,8 +391,10 @@ class Frame extends JFrame
             else if (cmd.equals("TEST_DRIVEN_VEHICLES"))
                 getTestDrivenVehicles();
             
-            else if (cmd.equals("TOP_FIVE_VEHICLES"))
+            else if (cmd.equals("TOP_FIVE_VEHICLES")){
+                System.out.println("Top Five command gotten...");
                 getTopFiveVehicles();
+            }
             
             else if (cmd.equals("TOTAL_DEALERSHIP_SALES"))
                 getTotalDealershipSales();
@@ -402,7 +405,6 @@ class Frame extends JFrame
 
 		catch (Exception x){
 			x.printStackTrace();
-
 			System.out.println("Frame: actionPerformed(): Exception");
 		}
 	}
