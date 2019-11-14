@@ -106,14 +106,14 @@ public void login(ConnectionHandler connectionHandler){
     ResultSet resultSet = null;
     PreparedStatement pstatement = null;
         
-        if (!loggedIn || connectionHandler.conn == null){    
+        if (!loggedIn || this.connectionHandler.conn == null){    
             try{
-                pstatement = connectionHandler.getConnection().prepareStatement("SELECT role FROM sales_emps S WHERE S.username = ? AND S.password = ?");
+                pstatement = this.connectionHandler.getConnection().prepareStatement("SELECT role FROM sales_emps S WHERE S.username = ? AND S.password = ?");
                 pstatement.clearParameters();
                 pstatement.setString(1, "" + usernameTF.getText() + "");
                 pstatement.setString(2, new String(passwordTF.getPassword()));
 
-                resultSet = connectionHandler.performQuery(pstatement);
+                resultSet = this.connectionHandler.performQuery(pstatement);
 
                 //process query Results
                 //unsure if this is the best way to check if anything was returned

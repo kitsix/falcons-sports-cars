@@ -1,7 +1,4 @@
-import java.lang.*;
-import java.util.*;
 import java.sql.*;
-import javax.sql.*;
 
 // This class is responsible for:
 // 1: taking credentials and correctly establishing a connection

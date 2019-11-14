@@ -31,7 +31,6 @@ class Frame extends JFrame
 { 
     JButton loginButton, logoutButton, registerButton, queryButton, clearButton, closeQueryResultsButton, exitButton;
     JPanel mainPanel;
-    JButton customerVisitInfo, testDrivenInfo, topFiveVehiclesInfo, totalSalesInfo, salesPeopleInfo;
     JMenu loginMenu;
 	GroupLayout layout;
     QueryFrame queryFrame; 
@@ -72,34 +71,9 @@ class Frame extends JFrame
         exitButton.addActionListener(this);
         exitButton.setActionCommand("EXIT");
 
-		customerVisitInfo = new JButton("Customer Visit Info");
-		customerVisitInfo.addActionListener(this);
-		customerVisitInfo.setActionCommand("CUSTOMER_VISIT_INFO");
-
-        testDrivenInfo = new JButton("Test-Driven Vehicles Info");
-        testDrivenInfo.addActionListener(this);
-        testDrivenInfo.setActionCommand("TEST_DRIVEN_VEHICLES");
-
-        topFiveVehiclesInfo = new JButton("Top 5 Vehicles");
-        topFiveVehiclesInfo.addActionListener(this);
-        topFiveVehiclesInfo.setActionCommand("TOP_FIVE_VEHICLES");
-
-        totalSalesInfo = new JButton("Total Sales Per Dealership");
-        totalSalesInfo.addActionListener(this);
-        totalSalesInfo.setActionCommand("TOTAL_DEALERSHIP_SALES");
-
-        salesPeopleInfo = new JButton("Sales Employee Info");
-        salesPeopleInfo.addActionListener(this);
-        salesPeopleInfo.setActionCommand("SALES_EMPS_INFO");
-
 		getRootPane().setDefaultButton(loginButton);
 
         mainPanel = new JPanel();
-        mainPanel.add(topFiveVehiclesInfo);
-        mainPanel.add(customerVisitInfo);
-        mainPanel.add(testDrivenInfo);
-        mainPanel.add(totalSalesInfo);
-        mainPanel.add(salesPeopleInfo);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);
@@ -119,12 +93,36 @@ class Frame extends JFrame
         JMenu spaceMenu2 = new JMenu("                                                                                                              ");
         spaceMenu.setEnabled(false);
 
-        JMenuItem loginMenuItem = new JMenuItem("Query"/*, exitIcon*/);
-        loginMenuItem.setMnemonic(KeyEvent.VK_E);
-        loginMenuItem.setToolTipText("Test a query");
-        loginMenuItem.addActionListener((event) -> System.exit(0));
+        JMenuItem customerVisitsMenuItem = new JMenuItem("Customer Visits"/*, exitIcon*/);
+        customerVisitsMenuItem.setMnemonic(KeyEvent.VK_E);
+        customerVisitsMenuItem.setToolTipText("Display customer visit information");
+        customerVisitsMenuItem.addActionListener((event) -> getCustomerVisitInfo());
+
+        JMenuItem topFiveVehiclesMenuItem = new JMenuItem("Bestsellers");
+        topFiveVehiclesMenuItem.setMnemonic(KeyEvent.VK_E);
+        topFiveVehiclesMenuItem.setToolTipText("Display top five vehicles");
+        topFiveVehiclesMenuItem.addActionListener((event) -> getTopFiveVehicles());
+
+        JMenuItem testDriveMenuItem = new JMenuItem("Testdrives");
+        testDriveMenuItem.setMnemonic(KeyEvent.VK_E);
+        testDriveMenuItem.setToolTipText("Display testdrive information");
+        testDriveMenuItem.addActionListener((event) -> getTestDrivenVehicles());
+
+        JMenuItem salesMenuItem = new JMenuItem("Sales");
+        salesMenuItem.setMnemonic(KeyEvent.VK_E);
+        salesMenuItem.setToolTipText("Display dealership sales information");
+        salesMenuItem.addActionListener((event) -> getTotalDealershipSales());
+
+        JMenuItem employeeInformationMenuItem = new JMenuItem("Employee Information");
+        employeeInformationMenuItem.setMnemonic(KeyEvent.VK_E);
+        employeeInformationMenuItem.setToolTipText("Display employees information");
+        employeeInformationMenuItem.addActionListener((event) -> getSalesEmpsInfo());
         
-        loginMenu.add(loginMenuItem);
+        loginMenu.add(customerVisitsMenuItem);
+        loginMenu.add(topFiveVehiclesMenuItem);
+        loginMenu.add(testDriveMenuItem);
+        loginMenu.add(salesMenuItem);
+        loginMenu.add(employeeInformationMenuItem);
         menuBar.add(loginButton);
         menuBar.add(spaceMenu);
         menuBar.add(spaceMenu2);
