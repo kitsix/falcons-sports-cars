@@ -118,8 +118,9 @@ public void login(ConnectionHandler connectionHandler){
                 if(!resultSet.next()) {
                     loginSucceeded = false;
                 }
-
-                role = resultSet.getObject(1).toString();
+                else {
+                    role = resultSet.getObject(1).toString();
+                }
             }
             
             catch (Exception e){
