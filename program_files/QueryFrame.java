@@ -42,36 +42,6 @@ class QueryFrame extends JFrame
 		buttonPanel.add(clear);
 		buttonPanel.add(cancel);
 
-        //-------------------------------------------------------------------------------------------------------------------------//
-
-		// mainPanel = new JPanel();
-
-		// layout = new GroupLayout(mainPanel);
-		// mainPanel.setLayout(layout);
-
-		// layout.setAutoCreateGaps(true);
-		// layout.setAutoCreateContainerGaps(true);
-
-		// GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
-
-		// hGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-			// .addComponent(queryAreaScrollPane)
-            // .addComponent(buttonPanel));
-
-		// layout.setHorizontalGroup(hGroup);
-
-		// GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
-
-		// vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryAreaScrollPane));
-
-		// vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(buttonPanel));
-
-        // layout.setVerticalGroup(vGroup);
-
-        // add(mainPanel, BorderLayout.CENTER);
-        
-        //-------------------------------------------------------------------------------------------------------------------------//
-
         add(queryAreaScrollPane, BorderLayout.CENTER);        
         add(buttonPanel, BorderLayout.SOUTH);
 
@@ -87,7 +57,7 @@ class QueryFrame extends JFrame
         int queryFrameHeight = d.height/2;
 
 		setSize(queryFrameWidth, queryFrameHeight);
-		setLocation(4, d.height/2 - queryFrameHeight/2);
+		setLocationRelativeTo(this.host);
 		setTitle("Query Frame");
         setDefaultCloseOperation(HIDE_ON_CLOSE);
 		setVisible(false);

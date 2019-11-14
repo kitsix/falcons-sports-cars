@@ -8,7 +8,7 @@ import javax.swing.JDialog;
 class LoginDialog  extends  JDialog
 implements ActionListener
 {
-    String role;
+    String                  role;
     JTextField              usernameTF;
     JPasswordField          passwordTF;
     JLabel                  usernameLabel, passwordLabel;
@@ -43,6 +43,8 @@ implements ActionListener
         buttonP.add(loginButton);
         buttonP.add(exitButton);
         add (buttonP, BorderLayout.SOUTH);
+
+        getRootPane().setDefaultButton(loginButton);
         
         setSize(300, 300);
         setVisible(true);
