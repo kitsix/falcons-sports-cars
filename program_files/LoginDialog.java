@@ -120,7 +120,6 @@ public void login(ConnectionHandler connectionHandler){
                 }
 
                 role = resultSet.getObject(1).toString();
-                System.out.println(role);
             }
             
             catch (Exception e){
