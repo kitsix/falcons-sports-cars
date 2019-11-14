@@ -193,6 +193,7 @@ class Frame extends JFrame
                 queryFrame.setVisible(false);
                 this.loginButton.setText("Login");
                 this.loginButton.setActionCommand("LOGIN");
+                this.loginMenu.setText("Guest");
             }
         }
 
@@ -265,13 +266,7 @@ class Frame extends JFrame
 
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
-        loginDialog = new LoginDialog(this, this.connectionHandler);
-        if(loggedIn == true){
-            this.loginButton.setText("Logout");
-            this.loginButton.setActionCommand("LOGOUT"); 
-            this.loginMenu.setName(loginDialog.tempUserName);
-        }
-        
+        loginDialog = new LoginDialog(this, this.connectionHandler);   
     }
     
     public void closeQueryResultsFrames(){
