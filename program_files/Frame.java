@@ -82,26 +82,31 @@ class Frame extends JFrame
         customerVisitsMenuItem.setMnemonic(KeyEvent.VK_E);
         customerVisitsMenuItem.setToolTipText("Display customer visit information");
         customerVisitsMenuItem.addActionListener((event) -> getCustomerVisitInfo());
+        customerVisitsMenuItem.setVisible(false);
 
         topFiveVehiclesMenuItem = new JMenuItem("Bestsellers");
         topFiveVehiclesMenuItem.setMnemonic(KeyEvent.VK_E);
         topFiveVehiclesMenuItem.setToolTipText("Display top five vehicles");
         topFiveVehiclesMenuItem.addActionListener((event) -> getTopFiveVehicles());
+        topFiveVehiclesMenuItem.setVisible(false);
 
         testDriveMenuItem = new JMenuItem("Testdrives");
         testDriveMenuItem.setMnemonic(KeyEvent.VK_E);
         testDriveMenuItem.setToolTipText("Display testdrive information");
         testDriveMenuItem.addActionListener((event) -> getTestDrivenVehicles());
+        testDriveMenuItem.setVisible(false);
 
         salesMenuItem = new JMenuItem("Sales");
         salesMenuItem.setMnemonic(KeyEvent.VK_E);
         salesMenuItem.setToolTipText("Display dealership sales information");
         salesMenuItem.addActionListener((event) -> getTotalDealershipSales());
+        salesMenuItem.setVisible(false);
 
         employeeInformationMenuItem = new JMenuItem("Employee Information");
         employeeInformationMenuItem.setMnemonic(KeyEvent.VK_E);
         employeeInformationMenuItem.setToolTipText("Display employees information");
         employeeInformationMenuItem.addActionListener((event) -> getSalesEmpsInfo());
+        employeeInformationMenuItem.setVisible(false);
         
         loginMenu.add(customerVisitsMenuItem);
         loginMenu.add(topFiveVehiclesMenuItem);

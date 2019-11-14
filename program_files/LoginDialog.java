@@ -135,6 +135,20 @@ public void login(ConnectionHandler connectionHandler){
                 this.mainFrame.loginMenu.setText(usernameTF.getText());
                 this.mainFrame.loginButton.setText("Logout");
                 this.mainFrame.loginButton.setActionCommand("LOGOUT");
+                System.out.println(role);
+                if(role.equals("floor") || role.equals("internet")){
+                    this.mainFrame.customerVisitsMenuItem.setVisible(true);
+                    this.mainFrame.testDriveMenuItem.setVisible(true);
+                    this.mainFrame.topFiveVehiclesMenuItem.setVisible(true);
+                }
+                else if(role.equals("manager")){
+                    this.mainFrame.customerVisitsMenuItem.setVisible(true);
+                    this.mainFrame.testDriveMenuItem.setVisible(true);
+                    this.mainFrame.topFiveVehiclesMenuItem.setVisible(true);
+                    this.mainFrame.salesMenuItem.setVisible(true);
+                    this.mainFrame.employeeInformationMenuItem.setVisible(true);
+
+                }
                 dispose();
             }
             else {
