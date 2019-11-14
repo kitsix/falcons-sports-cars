@@ -22,8 +22,7 @@ class QueryResultsFrame extends JFrame
     QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet)
 	{        
         this.host = host;
-        this.addWindowListener(this);
-    
+		this.addWindowListener(this);    
 		Container contentPane = getContentPane();
 
         try
@@ -95,7 +94,8 @@ class QueryResultsFrame extends JFrame
         int queryResultsFrameHeight = d.height/2;
 
 		setSize(queryResultsFrameWidth, queryResultsFrameHeight);
-		setLocation((d.width - (d.width/2 + 4)), d.height/2 - queryResultsFrameHeight/2);        
+		//setLocation((d.width - (d.width/2 + 4)), d.height/2 - queryResultsFrameHeight/2);  
+		setLocationRelativeTo(this.host);      
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}

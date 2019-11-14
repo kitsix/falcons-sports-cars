@@ -132,7 +132,7 @@ public void login(ConnectionHandler connectionHandler){
             }
             
             if (loginSucceeded){            
-                this.mainFrame.loginMenu.setText(usernameTF.getText());
+                this.mainFrame.loginMenu.setText(usernameTF.getText() + " ");
                 this.mainFrame.loginButton.setText("Logout");
                 this.mainFrame.loginButton.setActionCommand("LOGOUT");
                 System.out.println(role);
