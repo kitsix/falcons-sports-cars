@@ -244,6 +244,7 @@ class Frame extends JFrame
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
         loginDialog = new LoginDialog(this);
+        this.connectionHandler = loginDialog.getConnectionHandler();
     }
     
     public void closeQueryResultsFrames(){

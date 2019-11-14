@@ -152,4 +152,7 @@ public void login(ConnectionHandler connectionHandler){
 			// JOptionPane.showMessageDialog(this, "You are already logged in!", "Alert", JOptionPane.INFORMATION_MESSAGE);
         }
 }
+public ConnectionHandler getConnectionHandler(){
+    return this.connectionHandler;
+}
 }
