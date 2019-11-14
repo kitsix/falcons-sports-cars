@@ -20,94 +20,95 @@ implements ActionListener
     JPasswordField          passwordTF;
     JLabel                  usernameLabel, passwordLabel;
     JPanel                  myMainPanel, buttonP;
-    JButton                 registerButton, loginButton;
+    JButton                 registerButton, loginButton, exitButton;
+    ConnectionHandler       connectionHandler;
 
     LoginDialog(JFrame frame){
 
-        System.out.println("login dialog created hello");
-        buttonP = new JPanel(new FlowLayout());
+        connectionHandler = new ConnectionHandler();
         
-        buildBasicGui(); // method call
+        buildBasicGui(); 
         
-        registerButton = new JButton("register");
-        loginButton = new JButton("login");
-        
+        registerButton = new JButton("Register");
         registerButton.setActionCommand("REGISTER BUTTON");
-        loginButton.setActionCommand("LOGIN BUTTON");
-        
         registerButton.addActionListener(this);
+
+        loginButton = new JButton("Login");
+        loginButton.setActionCommand("LOGIN BUTTON");
         loginButton.addActionListener(this);
+
+        exitButton = new JButton("Exit");
+        exitButton.setActionCommand("EXIT");
+        exitButton.addActionListener(this);
         
+        buttonP = new JPanel(new FlowLayout());
         buttonP.add(registerButton);
         buttonP.add(loginButton);
+        buttonP.add(exitButton);
         add (buttonP, BorderLayout.SOUTH);
         
         setSize(300, 300);
         setVisible(true);
         setLocationRelativeTo(frame);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setResizable(false);
-    
-} // end of constructor
-//---------------------------------------------------------------------------------------------------------------
+        setResizable(false); 
+}
 
-void buildBasicGui(){
-    myMainPanel = new JPanel();
-    
-    GroupLayout layout = new GroupLayout(myMainPanel);
-    
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
-    
-    usernameLabel = new JLabel("Username");
-    passwordLabel = new JLabel("Password");
-    
-    usernameTF = new JTextField(10);
-    passwordTF = new JPasswordField(12);
-    
-    myMainPanel.setLayout (layout);
-    
-    GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
-    
-    hGroup.addGroup(layout.createParallelGroup().addComponent(usernameLabel).addComponent(passwordLabel));
-    hGroup.addGroup(layout.createParallelGroup().addComponent(usernameTF).addComponent(passwordTF));
-    
-    layout.setHorizontalGroup(hGroup);
-    
-    GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
-    
-    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(usernameLabel).addComponent(usernameTF));
-    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(passwordLabel).addComponent(passwordTF));
-    
-    layout.setVerticalGroup(vGroup);
-    
-    add (myMainPanel, BorderLayout.CENTER);
-    //setupMainDialog();
-    
-} // end of buildbasicGui
-
-public void actionPerformed (ActionEvent e){
-    String username = usernameTF.getText().trim();
-    String password = new String(passwordTF.getPassword());
-    
-    if (e.getActionCommand().equals("REGISTER BUTTON")){
-        System.out.println("registering");
-    }
-    
-    else if (e.getActionCommand().equals("LOGIN BUTTON")){
-        System.out.println("goodbye");
-        login();
-    } // end of else if 
-} 
-
-public void login(){
-    boolean loggedIn=false;
-    ConnectionHandler connectionHandler;
-    connectionHandler = new ConnectionHandler();
-    boolean loginSucceeded = true;
-    ResultSet resultSet = null;
-    PreparedStatement pstatement = null;
+    void buildBasicGui(){
+        myMainPanel = new JPanel();
         
+        GroupLayout layout = new GroupLayout(myMainPanel);
+        
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+        
+        usernameLabel = new JLabel("Username");
+        passwordLabel = new JLabel("Password");
+        
+        usernameTF = new JTextField(10);
+        passwordTF = new JPasswordField(12);
+        
+        myMainPanel.setLayout (layout);
+        
+        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+        
+        hGroup.addGroup(layout.createParallelGroup().addComponent(usernameLabel).addComponent(passwordLabel));
+        hGroup.addGroup(layout.createParallelGroup().addComponent(usernameTF).addComponent(passwordTF));
+        
+        layout.setHorizontalGroup(hGroup);
+        
+        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+        
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(usernameLabel).addComponent(usernameTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(passwordLabel).addComponent(passwordTF));
+        layout.setVerticalGroup(vGroup);
+        
+        add (myMainPanel, BorderLayout.CENTER);
+    
+    } // end of buildbasicGui
+
+    public void actionPerformed (ActionEvent e){
+        String username = usernameTF.getText().trim();
+        String password = new String(passwordTF.getPassword());
+        
+        if (e.getActionCommand().equals("REGISTER BUTTON")){
+            System.out.println("registering");
+        }
+        
+        else if (e.getActionCommand().equals("LOGIN BUTTON")){
+            login(this.connectionHandler);
+        }
+        else if (e.getActionCommand().equals("EXIT")){
+            this.dispose();
+        }
+    } 
+
+    public void login(ConnectionHandler connectionHandler){
+        boolean loggedIn=false;
+        boolean loginSucceeded = true;
+        ResultSet resultSet = null;
+        PreparedStatement pstatement = null;
+            
         if (!loggedIn || connectionHandler.conn == null){    
             try{
                 // connectionHandler.setConnectionProperties("java_test_user", "pass", "127.0.0.1", 3306, "java_db_test", "MySQL"); // This is for my local database.
@@ -148,7 +149,9 @@ public void login(){
             else {
                 JOptionPane.showMessageDialog(this, "Login failed!", "Alert", JOptionPane.ERROR_MESSAGE);
             }
-			// JOptionPane.showMessageDialog(this, "You are already logged in!", "Alert", JOptionPane.INFORMATION_MESSAGE);
         }
-}
+    }
+    public ConnectionHandler getConnectionHandler(){
+        return this.connectionHandler;
+    }
 }
