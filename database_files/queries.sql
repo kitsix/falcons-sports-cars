@@ -1,6 +1,5 @@
 /*
 Query 1: A manager/salesperson should be able to view the visit details of a given customer.
-
 I understand customer visit details to include:
 - id
 - first name
@@ -9,7 +8,6 @@ I understand customer visit details to include:
 - dealership_address
 - assigned sales employee id
 - test driven vehicles and the corresponding datetime of the test drive
-
 I do not include the customer's purchased vehicles -- there is a separate view (customers_purchased_vehicles) for that if we need it.
 */
 
@@ -47,7 +45,8 @@ SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new
 FROM vehicles V, purchase_vehicle PV
 WHERE PV.stock_number = V.stock_number
 GROUP BY V.make, V.model, V.year, V.new
-ORDER BY num_sold_vehicles DESC;
+ORDER BY num_sold_vehicles DESC
+LIMIT 0, 5;
 
 /*
 Query 4: A manager should be able to list the dealership locations in order of their total sales amount in the current month.
@@ -67,7 +66,3 @@ SELECT SEI.id, SEI.dealership_number, SEI.first_name, SEI.last_name, SEI.email, 
 FROM sales_emps_info SEI, test_drives_per_sales_emp_current_year TDSE, sales_per_sales_emp_current_year SSE, commissions_per_sales_emp_current_year CSE
 WHERE SEI.id = TDSE.id AND SEI.id = SSE.id AND SEI.id = CSE.id
 ORDER BY CSE.commissions_total DESC;
-
-
-
-

@@ -468,7 +468,8 @@ class Frame extends JFrame
             String query = "SELECT SEI.id, SEI.dealership_number, SEI.first_name, SEI.last_name, SEI.email, SEI.street, SEI.zip, SEI.phone_number, TDSE.test_drives, SSE.sales, CSE.commissions_total " +
                             "FROM sales_emps_info SEI, test_drives_per_sales_emp_current_year TDSE, sales_per_sales_emp_current_year SSE, commissions_per_sales_emp_current_year CSE " +
                             "WHERE SEI.id = TDSE.id AND SEI.id = SSE.id AND SEI.id = CSE.id " +
-                            "ORDER BY CSE.commissions_total DESC";
+                            "ORDER BY num_sold_vehicles DESC " +
+                            "LIMIT 0, 5";
             
             performQueryAndDisplayResults(query);
         }
