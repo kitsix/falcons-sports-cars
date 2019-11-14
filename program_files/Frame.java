@@ -215,7 +215,7 @@ class Frame extends JFrame
         try{  
             if(connectionHandler == null)
                 System.out.println("oh no..");          
-            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(queryFrame.getQuery());        
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);        
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
             
             QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
