@@ -1,17 +1,9 @@
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.awt.Dialog;
 import javax.swing.JDialog;
-import javax.swing.GroupLayout.*;
 
 class LoginDialog  extends  JDialog
 implements ActionListener
@@ -23,9 +15,9 @@ implements ActionListener
     JButton                 registerButton, loginButton, exitButton;
     ConnectionHandler       connectionHandler;
 
-    LoginDialog(JFrame frame){
+    LoginDialog(JFrame frame, ConnectionHandler connectionHandler){
 
-        connectionHandler = new ConnectionHandler();
+        this.connectionHandler = connectionHandler;
         
         buildBasicGui(); 
         
@@ -111,14 +103,6 @@ public void login(ConnectionHandler connectionHandler){
         
         if (!loggedIn || connectionHandler.conn == null){    
             try{
-                // connectionHandler.setConnectionProperties("java_test_user", "pass", "127.0.0.1", 3306, "java_db_test", "MySQL"); // This is for my local database.
-                // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
-                // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
-                //connectionHandler.setConnectionProperties(usernameTF.getText(), new String(passwordTF.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
-                connectionHandler.setConnectionProperties("root", "littlewhale", "localhost", 3306, "falconcars", "MySQL"); // Again, this is for my test setup.
-                connectionHandler.createJdbcUrl();
-                connectionHandler.establishConnection();
-
                 pstatement = connectionHandler.getConnection().prepareStatement("SELECT role FROM sales_emps S WHERE S.username = ? AND S.password = ?");
                 pstatement.clearParameters();
                 pstatement.setString(1, "" + usernameTF.getText() + "");
@@ -131,9 +115,7 @@ public void login(ConnectionHandler connectionHandler){
                 if(!resultSet.next()) {
                     loginSucceeded = false;
                 }
-
             }
-            
             
             catch (Exception e){
                 loginSucceeded = false;

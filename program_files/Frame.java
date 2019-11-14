@@ -134,6 +134,8 @@ class Frame extends JFrame
         setJMenuBar(menuBar);
         this.setVisible(true);
         setupMainFrame();
+        connectionHandler = new ConnectionHandler();
+        connectToDatabase();
     }
 
     void setupMainFrame(){
@@ -149,6 +151,25 @@ class Frame extends JFrame
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);        
         setResizable(true);
+    }
+
+    public void connectToDatabase(){
+        
+        try{
+            // connectionHandler.setConnectionProperties("java_test_user", "pass", "127.0.0.1", 3306, "java_db_test", "MySQL"); // This is for my local database.
+            // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
+            // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
+            //connectionHandler.setConnectionProperties(usernameTF.getText(), new String(passwordTF.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
+            connectionHandler.setConnectionProperties("root", "littlewhale", "localhost", 3306, "falconcars", "MySQL"); // Again, this is for my test setup.
+            connectionHandler.createJdbcUrl();
+            connectionHandler.establishConnection();
+
+        }
+        catch (Exception e){
+            JOptionPane.showMessageDialog(this, "Connection failed!", "Alert", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        
     }
 
  	public void logout(){
@@ -181,7 +202,7 @@ class Frame extends JFrame
 
 	public void register(){
 		System.out.println("Frame: REGISTER");
-        loginDialog = new LoginDialog(this);
+        loginDialog = new LoginDialog(this, this.connectionHandler);
 	}
     
     public void displayQueryFrame(){
@@ -243,8 +264,7 @@ class Frame extends JFrame
 
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
-        loginDialog = new LoginDialog(this);
-        this.connectionHandler = loginDialog.getConnectionHandler();
+        loginDialog = new LoginDialog(this, this.connectionHandler);
     }
     
     public void closeQueryResultsFrames(){
