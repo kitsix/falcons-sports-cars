@@ -8,6 +8,7 @@ import javax.swing.JDialog;
 class LoginDialog  extends  JDialog
 implements ActionListener
 {
+    String role;
     JTextField              usernameTF;
     JPasswordField          passwordTF;
     JLabel                  usernameLabel, passwordLabel;
@@ -117,6 +118,9 @@ public void login(ConnectionHandler connectionHandler){
                 if(!resultSet.next()) {
                     loginSucceeded = false;
                 }
+
+                role = resultSet.getObject(1).toString();
+                System.out.println(role);
             }
             
             catch (Exception e){
@@ -127,6 +131,7 @@ public void login(ConnectionHandler connectionHandler){
             
             if (loginSucceeded){            
                 loggedIn = true;
+                System.out.println("Login successfull");
                 dispose();
             }
             else {
@@ -136,5 +141,9 @@ public void login(ConnectionHandler connectionHandler){
 }
 public ConnectionHandler getConnectionHandler(){
     return this.connectionHandler;
+}
+
+public String getRole() {
+    return role;
 }
 }
