@@ -32,7 +32,7 @@ class Frame extends JFrame
 			implements ActionListener, WindowListener
 { 
 	JButton loginButton, logoutButton, registerButton, queryButton, clearButton, closeQueryResultsButton, exitButton;    
-    JPanel mainPanel, queryButtonPanel;
+    JPanel mainPanel;
     JButton customerVisitInfo, testDrivenInfo, topFiveVehiclesInfo, totalSalesInfo, salesPeopleInfo;
 	GroupLayout layout;
     QueryFrame queryFrame; 
@@ -97,41 +97,17 @@ class Frame extends JFrame
         salesPeopleInfo.addActionListener(this);
         salesPeopleInfo.setActionCommand("SALES_EMPS_INFO");
 
-        queryButtonPanel = new JPanel();
-        queryButtonPanel.add(customerVisitInfo);
-        queryButtonPanel.add(testDrivenInfo);
-        queryButtonPanel.add(topFiveVehiclesInfo);
-        queryButtonPanel.add(totalSalesInfo);
-        queryButtonPanel.add(salesPeopleInfo);
-
 		getRootPane().setDefaultButton(loginButton);
 
         mainPanel = new JPanel();
-
 		layout = new GroupLayout(mainPanel);
-
-		mainPanel.setLayout(layout);
-
-		layout.setAutoCreateGaps(true);
+        layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
-
-		GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
-
-		hGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(queryButtonPanel));  
-		layout.setHorizontalGroup(hGroup);
-        
-		GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
-
-        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryButtonPanel));
-
-		layout.setVerticalGroup(vGroup);
-
+		mainPanel.setLayout(layout);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);
         queryResultsFrameVector = new Vector<QueryResultsFrame>();
-        
         queryResultsCount = 0;
 
         JMenuBar menuBar = new JMenuBar();
@@ -142,7 +118,9 @@ class Frame extends JFrame
         loginMenu.setMnemonic(KeyEvent.VK_F);
         loginMenu.add(Box.createHorizontalGlue());
         menuBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        JMenu spaceMenu = new JMenu("                                                                    ");
+        JMenu spaceMenu = new JMenu("                                                                                                        ");
+        spaceMenu.setEnabled(false);
+        JMenu spaceMenu2 = new JMenu("                                                                                                              ");
         spaceMenu.setEnabled(false);
 
         JMenuItem loginMenuItem = new JMenuItem("Login"/*, exitIcon*/);
@@ -153,11 +131,11 @@ class Frame extends JFrame
         loginMenu.add(loginMenuItem);
         menuBar.add(loginButton);
         menuBar.add(spaceMenu);
+        menuBar.add(spaceMenu2);
         menuBar.add(loginMenu);
 
         setJMenuBar(menuBar);
         this.setVisible(true);
-
         setupMainFrame();
     }
 
@@ -167,7 +145,7 @@ class Frame extends JFrame
 		tk = Toolkit.getDefaultToolkit();
 		d = tk.getScreenSize();
         int frameWidth = 940;
-        int frameHeight = 200;
+        int frameHeight = 600;
 		setSize(frameWidth, frameHeight);
 		setLocation(d.width/2 - frameWidth/2, d.height/8 - frameHeight/2);
 		setTitle("Falcons Sports Cars");
@@ -189,9 +167,7 @@ class Frame extends JFrame
             
             catch (Exception e){
                 logoutSucceeded = false;
-                
                 JOptionPane.showMessageDialog(this, "Logout failed!", "Alert", JOptionPane.ERROR_MESSAGE);
-                
                 e.printStackTrace();
             }
             
@@ -208,7 +184,7 @@ class Frame extends JFrame
 
 	public void register(){
 		System.out.println("Frame: REGISTER");
-        loginDialog = new LoginDialog();
+        loginDialog = new LoginDialog(this);
 	}
     
     public void displayQueryFrame(){
@@ -269,7 +245,7 @@ class Frame extends JFrame
 
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
-        loginDialog = new LoginDialog();
+        loginDialog = new LoginDialog(this);
     }
     
     public void closeQueryResultsFrames(){

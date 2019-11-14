@@ -17,7 +17,7 @@ implements ActionListener
     JPanel                  myMainPanel, buttonP;
     JButton                 registerButton, loginButton;
 
-    LoginDialog(){
+    LoginDialog(JFrame frame){
 
         System.out.println("login dialog created hello");
         buttonP = new JPanel(new FlowLayout());
@@ -39,6 +39,7 @@ implements ActionListener
         
         setSize(300, 300);
         setVisible(true);
+        setLocationRelativeTo(frame);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
     
@@ -53,8 +54,8 @@ void buildBasicGui(){
     layout.setAutoCreateGaps(true);
     layout.setAutoCreateContainerGaps(true);
     
-    usernameLabel = new JLabel("username");
-    passwordLabel = new JLabel("password");
+    usernameLabel = new JLabel("Username");
+    passwordLabel = new JLabel("Password");
     
     usernameTF = new JTextField(10);
     passwordTF = new JPasswordField(12);
