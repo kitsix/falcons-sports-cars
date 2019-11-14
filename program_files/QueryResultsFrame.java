@@ -10,23 +10,22 @@ import java.sql.*;
 class QueryResultsFrame extends JFrame
 	implements WindowListener
 {
-	Frame host;
-    JLabel queryLabel, queryResultsTableLabel;
-    JTextArea queryArea;
-    JScrollPane queryAreaScrollPane = null;
-    JTable queryResultsTable;
-    JScrollPane queryResultsTableScrollPane = null;
-    JPanel mainPanel;
-    GroupLayout layout;
+	Frame 				host;
+    JLabel 				queryLabel, queryResultsTableLabel;
+    JTextArea 			queryArea;
+    JScrollPane 		queryAreaScrollPane = null;
+    JTable 				queryResultsTable;
+    JScrollPane 		queryResultsTableScrollPane = null;
+    JPanel 				mainPanel;
+    GroupLayout 		layout;
 
-    QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet)
-	{        
-        this.host = host;
+    QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet){        
+		
+		this.host = host;
 		this.addWindowListener(this);    
 		Container contentPane = getContentPane();
 
-        try
-        {   
+        try{   
             queryArea = new JTextArea(pStatement.toString());
             queryArea.setEditable(false);
             queryAreaScrollPane = new JScrollPane(queryArea);        
@@ -36,16 +35,16 @@ class QueryResultsFrame extends JFrame
             
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             
-            for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++)
-                columnNames.addElement(resultSetMetaData.getColumnName(i));
+            for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+				columnNames.addElement(resultSetMetaData.getColumnName(i));
+			}
             
-            while (resultSet.next())
-            {
+            while (resultSet.next()){
                 Vector<Object> currentRow = new Vector<Object>();
 
-                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++)
-                    currentRow.addElement(resultSet.getObject(i));
-                
+                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
+					currentRow.addElement(resultSet.getObject(i));
+				}
                 rows.addElement(currentRow);
             }
             
@@ -53,8 +52,7 @@ class QueryResultsFrame extends JFrame
             queryResultsTableScrollPane = new JScrollPane(queryResultsTable);
         }
         
-        catch (Exception e)
-        {
+        catch (Exception e){
             e.printStackTrace();
         }
 
@@ -62,7 +60,6 @@ class QueryResultsFrame extends JFrame
 
 		layout = new GroupLayout(mainPanel);
 		mainPanel.setLayout(layout);
-
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 
@@ -77,7 +74,6 @@ class QueryResultsFrame extends JFrame
 		GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
 
 		vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryAreaScrollPane));
-
 		vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryResultsTableScrollPane));
 
         layout.setVerticalGroup(vGroup);
@@ -94,40 +90,32 @@ class QueryResultsFrame extends JFrame
         int queryResultsFrameHeight = d.height/2;
 
 		setSize(queryResultsFrameWidth, queryResultsFrameHeight);
-		//setLocation((d.width - (d.width/2 + 4)), d.height/2 - queryResultsFrameHeight/2);  
 		setLocationRelativeTo(this.host);      
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
 
-	public void windowActivated(WindowEvent e)
-	{
+	public void windowActivated(WindowEvent e){
 	}
 
-	public void windowClosed(WindowEvent e)
-	{
+	public void windowClosed(WindowEvent e){
 	}
 
-	public void windowClosing(WindowEvent e)
-	{
+	public void windowClosing(WindowEvent e){
 		System.out.println("QueryResultsFrame: windowClosing");
         
         host.actionPerformed(new ActionEvent(this, 0, "QUERY_RESULTS_FRAME_CLOSING"));
 	}
 
-	public void windowDeactivated(WindowEvent e)
-	{
+	public void windowDeactivated(WindowEvent e){
 	}
 
-	public void windowDeiconified(WindowEvent e)
-	{
+	public void windowDeiconified(WindowEvent e){
 	}
 
-	public void windowIconified(WindowEvent e)
-	{
+	public void windowIconified(WindowEvent e){
 	}
 
-	public void windowOpened(WindowEvent e)
-	{
+	public void windowOpened(WindowEvent e){
 	}
 }

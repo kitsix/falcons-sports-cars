@@ -7,8 +7,7 @@ import java.awt.event.*;
 // The ConnectionHandler will actually execute the query and return the results Frame.
 // The Frame will then display the query results via a new instance of the QueryResultsFrame.
 class QueryFrame extends JFrame
-	implements ActionListener, WindowListener
-{
+	implements ActionListener, WindowListener{
 	Frame host;
     JTextArea queryArea;
     JScrollPane queryAreaScrollPane;
@@ -16,8 +15,8 @@ class QueryFrame extends JFrame
 	GroupLayout layout;
 	JPanel buttonPanel, fieldPanel, mainPanel;
 
-    QueryFrame(Frame host)
-	{        
+    QueryFrame(Frame host){  
+
 		this.host = host;
 		this.addWindowListener(this);
 
@@ -63,79 +62,64 @@ class QueryFrame extends JFrame
 		setVisible(false);
 	}
 
-    public String getQuery()
-    {
+    public String getQuery(){
         return queryArea.getText();
     }
 
-	public void execute()
-	{
+	public void execute(){
 		System.out.println("QueryFrame: EXECUTE");
 
         host.actionPerformed(new ActionEvent(this, 0, "PERFORM_QUERY"));
 	}
 
-	public void clear()
-	{
+	public void clear(){
         System.out.println("QueryFrame: CLEAR");
         
 		queryArea.setText("");
 		queryArea.requestFocus();
 	}
 
-	public void cancel()
-	{
+	public void cancel(){
 		System.out.println("QueryFrame: CANCEL");
 
 		this.setVisible(false);
 	}
 
-	public void actionPerformed(ActionEvent e)
-	{
+	public void actionPerformed(ActionEvent e){
 		String cmd = e.getActionCommand();
 
-		if (cmd.equals("EXECUTE"))
-		{
+		if (cmd.equals("EXECUTE")){
 			execute();
 		}
 
-		else if (cmd.equals("CLEAR"))
-		{
+		else if (cmd.equals("CLEAR")){
 			clear();
 		}
 
-		else if (cmd.equals("CANCEL"))
-		{
+		else if (cmd.equals("CANCEL")){
 			cancel();
 		}
 	}
 
-	public void windowActivated(WindowEvent e)
-	{
+	public void windowActivated(WindowEvent e){
 	}
 
-	public void windowClosed(WindowEvent e)
-	{
+	public void windowClosed(WindowEvent e){
 	}
 
-	public void windowClosing(WindowEvent e)
-	{
+	public void windowClosing(WindowEvent e){
 		System.out.println("QueryFrame: windowClosing");
 	}
 
-	public void windowDeactivated(WindowEvent e)
-	{
+	public void windowDeactivated(WindowEvent e){
 	}
 
-	public void windowDeiconified(WindowEvent e)
-	{
+	public void windowDeiconified(WindowEvent e){
 	}
 
-	public void windowIconified(WindowEvent e)
-	{
+	public void windowIconified(WindowEvent e){
 	}
 
-	public void windowOpened(WindowEvent e)
-	{
+	public void windowOpened(WindowEvent e){
 	}
 }
