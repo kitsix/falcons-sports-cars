@@ -147,7 +147,7 @@ class Frame extends JFrame
             // connectionHandler.setConnectionProperties("admin", "Hossain123", "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS.
             // connectionHandler.setConnectionProperties(usernameField.getText(), new String(passwordField.getPassword()), "db-falcon-sports-cars.cginpqx3xobn.us-east-1.rds.amazonaws.com", 3306, "", "MySQL"); // This is for the AWS RDS except that it gets the login credentials from the username and password fields.
             //connectionHandler.setConnectionProperties(usernameTF.getText(), new String(passwordTF.getPassword()), "127.0.0.1", 3306, "4410_db_schema", "MySQL"); // Again, this is for my test setup.
-            connectionHandler.setConnectionProperties("root", "littlewhale", "localhost", 3306, "falconcars", "MySQL"); // Again, this is for my test setup.
+            connectionHandler.setConnectionProperties("root", "password", "localhost", 3306, "db_project", "MySQL"); // Again, this is for my test setup.
             connectionHandler.createJdbcUrl();
             connectionHandler.establishConnection();
 
@@ -299,7 +299,7 @@ class Frame extends JFrame
         String model = components[components.length - 1];
         
         if (!(make.equals("") && model.equals(""))){
-            String query = "SELECT D.dealership_number, C.id, P.first_name, P.last_name, TD.stock_number, V.make, V.model, TD.datetime " +
+            String query = "SELECT D.dealership_number, C.id, P.first_name, P.last_name, TD.stock_number, V.make, V.model, V.car_and_driver_hyperlink, TD.datetime " +
                             "FROM customers C, people P, sales_emps E, test_drives TD, vehicles V, dealerships D " +
                             "WHERE V.make = \'" + make + "\' AND V.model = \'" + model + "\' AND V.stock_number = TD.stock_number AND " +
                             "TD.customer_id = C.id AND C.id = P.id AND C.assigned_emp_id = E.id AND E.dealership_number = D.dealership_number";
@@ -314,7 +314,7 @@ class Frame extends JFrame
     public void getTopFiveVehicles(){
         System.out.println("Frame: TOP_FIVE_VEHICLES ---- within method");                                
         try{
-            String query = "SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new " +
+            String query = "SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink" +
                             "FROM vehicles V, purchase_vehicle PV " +
                             "WHERE PV.stock_number = V.stock_number " +
                             "GROUP BY V.make, V.model, V.year, V.new " +

@@ -1,25 +1,27 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.sql.*;
 
 // This is a simple class for displaying query results.
 // Note that each instance of this class is stored in a the queryResultsFrameVector data member of the Frame class.
 // This is to allow a user to dispose of all currently open QueryResultsFrame with a single click of the "Close Query Results" button.
-class QueryResultsFrame extends JFrame
-	implements WindowListener
-{
+class QueryResultsFrame extends JFrame implements WindowListener{
 	Frame host;
-    JLabel queryLabel, queryResultsTableLabel;
-    JTextArea queryArea;
-    JScrollPane queryAreaScrollPane = null;
-    JTable queryResultsTable;
-    JScrollPane queryResultsTableScrollPane = null;
-    JPanel mainPanel;
-    GroupLayout layout;
+	JLabel queryLabel, queryResultsTableLabel;
+	JTextArea queryArea;
+	JScrollPane queryAreaScrollPane = null;
+	JTable queryResultsTable;
+	JScrollPane queryResultsTableScrollPane = null;
+	JPanel mainPanel;
+	GroupLayout layout;
 
-    QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet)
+	QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet)
 	{        
         this.host = host;
         this.addWindowListener(this);
@@ -44,14 +46,40 @@ class QueryResultsFrame extends JFrame
             {
                 Vector<Object> currentRow = new Vector<Object>();
 
-                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++)
-                    currentRow.addElement(resultSet.getObject(i));
-                
+				for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+					currentRow.addElement(resultSet.getObject(i));
+				}
                 rows.addElement(currentRow);
             }
             
             queryResultsTable = new JTable(rows, columnNames);
-            queryResultsTableScrollPane = new JScrollPane(queryResultsTable);
+			queryResultsTableScrollPane = new JScrollPane(queryResultsTable);
+			
+			queryResultsTable.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent me) {
+					if(me.getClickCount() == 1) {
+						int row = queryResultsTable.getSelectedRow();
+						int col = queryResultsTable.getSelectedColumn();
+						String link = queryResultsTable.getValueAt(row, col).toString();
+						Desktop desktop = java.awt.Desktop.getDesktop();
+
+						if(link.startsWith("https")) {
+							try {
+								URI uri = new URI(link);
+								desktop.browse(uri);
+								
+							}
+							catch(URISyntaxException use) {
+								use.printStackTrace();
+							}
+							catch(IOException ioe) {
+								ioe.printStackTrace();
+							}
+						}
+					}
+				}
+			});
         }
         
         catch (Exception e)
