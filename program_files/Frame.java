@@ -1,16 +1,18 @@
 import java.sql.*;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import javafx.embed.swing.SwingFXUtils;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.awt.Image;
-
 
 // You will need Connector/J installed on your system and you will need to specify the installation path when you run the program.
 // I do this through command line as follows -- the general format is as follows:
@@ -396,71 +398,45 @@ class Frame extends JFrame
 			System.out.println("Frame: actionPerformed(): Exception");
 		}
     }
-    
+
     public void picture(){
         System.out.println("hello you are now in the image function....");
 
-        try { // table name:image and second image is field name
-
+        try {
             String query = "SELECT V.image " +
-                            "FROM vehicles V ";
-                            //"WHERE V.stock_number = '2001' ";
+                            "FROM vehicles V " +
+                            "WHERE V.stock_number = 2000 ";
             PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
-            
             queryResultsCount += 1;
+            resultSet.next();
 
-            if(resultSet.next()){
-                byte[] img = resultSet.getBytes("Image");
-
-                //Resize The ImageIcon
-                ImageIcon image = new ImageIcon(img);
-                Image im = image.getImage();
-                if(im == null){
-                    System.out.println(")))))):");
+            Blob imageBlob = resultSet.getBlob("image");
+            InputStream binaryStream = null;
+            try {
+                    if (imageBlob != null && imageBlob.length() > 0) {
+                    binaryStream = imageBlob.getBinaryStream();
                 }
-                JPanel imagePanel = new JPanel(){
-                    @Override
-                    protected void paintComponent(Graphics g) {
-                        super.paintComponent(g);
-                        g.drawImage(im, 50, 50, 100, 100, this);
-                    }
-                };
-                imagePanel.repaint();
-                this.add(imagePanel);
-                imagePanel.repaint();    
+            } catch (Exception ignore) {
             }
-            else{
-                System.out.println("error w image");
+
+            BufferedImage bimage = ImageIO.read(binaryStream);
+            Image image = bimage;
+
+            JPanel imagePanel = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(image, 50, 50, 100, 100, this);
             }
-    
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+        };
+            imagePanel.repaint();
+            this.add(imagePanel);
+            imagePanel.repaint(); 
+        } 
+        catch (Exception e) {
             e.printStackTrace();
         }
-
-        // **********
-        // try{
-        // //URL url = new URL("https://cdn3.iconfinder.com/data/icons/nature-animals/512/cat_A-512.png");
-        // System.out.println("in the try in the picture method");
-        // final BufferedImage image = ImageIO.read(new File("squid.jpg"));        
-        // if(image == null){
-        //     System.out.println(")))))):");
-        // }
-        // JPanel imagePanel = new JPanel(){
-        //     @Override
-        //     protected void paintComponent(Graphics g) {
-        //         super.paintComponent(g);
-        //         g.drawImage(image, 50, 50, 100, 100, this);
-        //     }
-        // };
-        // imagePanel.repaint();
-        // this.add(imagePanel);
-        // imagePanel.repaint();
-        // }
-        // catch(IOException io){
-        //     System.out.println("whoops...");
-        // }
     }
 
     public void windowActivated(WindowEvent e){
