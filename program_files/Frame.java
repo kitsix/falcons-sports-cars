@@ -326,7 +326,7 @@ class Frame extends JFrame
     public void getTopFiveVehicles(){
         System.out.println("Frame: TOP_FIVE_VEHICLES ---- within method");                                
         try{
-            String query = "SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink " +
+            String query = "SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink, V.image " +
                             "FROM vehicles V, purchase_vehicle PV " +
                             "WHERE PV.stock_number = V.stock_number " +
                             "GROUP BY V.make, V.model, V.year, V.new " +
@@ -342,7 +342,7 @@ class Frame extends JFrame
         System.out.println("Frame: TOTAL_DEALERSHIP_SALES");                                
 
         try{
-            String query = "SELECT D.dealership_number, SUM(V.price) AS total_amount_sold " +
+            String query = "SELECT D.dealership_name, D.dealership_number, SUM(V.price) AS total_amount_sold " +
                             "FROM vehicles V, purchase_vehicle PV, dealerships D " +
                             "WHERE PV.stock_number = V.stock_number AND V.dealership_number = D.dealership_number AND MONTH(V.sale_datetime) = MONTH(NOW()) " +
                             "GROUP BY D.dealership_number " +

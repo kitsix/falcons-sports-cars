@@ -1,5 +1,8 @@
 import javax.swing.*;
-
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -7,6 +10,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.sql.*;
+import javax.imageio.ImageIO;
+import javax.swing.table.*;
+
+
 
 // This is a simple class for displaying query results.
 // Note that each instance of this class is stored in a the queryResultsFrameVector data member of the Frame class.
@@ -28,6 +35,7 @@ class QueryResultsFrame extends JFrame
 		this.host = host;
 		this.addWindowListener(this);    
 		Container contentPane = getContentPane();
+		boolean printImage = false;
 
         try{   
             queryArea = new JTextArea(pStatement.toString());
@@ -41,18 +49,64 @@ class QueryResultsFrame extends JFrame
             
             for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
 				columnNames.addElement(resultSetMetaData.getColumnName(i));
+				if(resultSetMetaData.getColumnName(i).equals("image")){
+					printImage = true;
+					System.out.println("image att detected.");
+				}
 			}
             
             while (resultSet.next()){
                 Vector<Object> currentRow = new Vector<Object>();
 
                 for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
-					currentRow.addElement(resultSet.getObject(i));
+					currentRow.addElement(resultSet.getObject(i));						
 				}
-                rows.addElement(currentRow);
+				rows.addElement(currentRow);
+				
+				if(printImage == true)
+					{
+						Blob imageBlob = resultSet.getBlob("image");
+						InputStream binaryStream = null;
+						try {
+								if (imageBlob != null && imageBlob.length() > 0) {
+								binaryStream = imageBlob.getBinaryStream();
+							}
+						} catch (Exception ignore) {
+						}
+						if(binaryStream != null){
+							System.out.println("THERE IS AN IMAGE");
+			
+						BufferedImage bimage = ImageIO.read(binaryStream);
+						Image image = bimage;
+
+						//ImageIcon icon = new ImageIcon(image);
+						//rows.addElement(icon);
+			
+						JPanel imagePanel = new JPanel(){
+						@Override
+						protected void paintComponent(Graphics g) {
+							super.paintComponent(g);
+							g.drawImage(image, 50, 50, 100, 100, this);
+						}
+					};
+						//imagePanel.repaint();
+						ImageFrame test = new ImageFrame();
+						test.add(imagePanel);
+						imagePanel.repaint(); 
+					}}
+			}
+
+			DefaultTableModel model = new DefaultTableModel(rows, columnNames)
+        {
+            //  Returning the Class of each column will allow different
+            //  renderers to be used based on Class
+            public Class getColumnClass(int column)
+            {
+                return getValueAt(0, column).getClass();
             }
+        };
             
-            queryResultsTable = new JTable(rows, columnNames);
+            queryResultsTable = new JTable(model);
 			queryResultsTableScrollPane = new JScrollPane(queryResultsTable);
 			
 			queryResultsTable.addMouseListener(new MouseAdapter() {
@@ -62,8 +116,10 @@ class QueryResultsFrame extends JFrame
 						int row = queryResultsTable.getSelectedRow();
 						int col = queryResultsTable.getSelectedColumn();
 						String link = queryResultsTable.getValueAt(row, col).toString();
+						String test = queryResultsTable.getValueAt(row, col).toString();
 						Desktop desktop = java.awt.Desktop.getDesktop();
-
+						if(test.startsWith("[B"))
+							System.out.println("hacked");
 						if(link.startsWith("https")) {
 							try {
 								URI uri = new URI(link);
