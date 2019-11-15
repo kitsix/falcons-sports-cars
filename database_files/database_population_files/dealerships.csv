@@ -1,21 +1,21 @@
-dealership_number,street,zip
-1,Shasta,10045
-2,Butternut,06825
-3,Harper,95108
-4,Ridge Oak,03105
-5,West,75710
-6,Hintze,21239
-7,Ludington,32590
-8,Hansons,52410
-9,Algoma,95210
-10,Kennedy,37410
-11,Buell,43610
-12,Eastlawn,10024
-13,Morningstar,85077
-14,Fuller,95108
-15,Granby,44105
-16,Pepper Wood,25770
-17,Donald,30195
-18,Sutherland,44305
-19,Morning,07505
-20,Goodland,33742
+dealership_number,dealership_name,street,zip
+1,Dealership #1,Shasta,10045
+2,Dealership #2,Butternut,06825
+3,Dealership #3,Harper,95108
+4,Dealership #4,Ridge Oak,03105
+5,Dealership #5,West,75710
+6,Dealership #6,Hintze,21239
+7,Dealership #7,Ludington,32590
+8,Dealership #8,Hansons,52410
+9,Dealership #9,Algoma,95210
+10,Dealership #10,Kennedy,37410
+11,Dealership #11,Buell,43610
+12,Dealership #12,Eastlawn,10024
+13,Dealership #13,Morningstar,85077
+14,Dealership #14,Fuller,95108
+15,Dealership #15,Granby,44105
+16,Dealership #16,Pepper Wood,25770
+17,Dealership #17,Donald,30195
+18,Dealership #18,Sutherland,44305
+19,Dealership #19,Morning,07505
+20,Dealership #20,Goodland,33742
