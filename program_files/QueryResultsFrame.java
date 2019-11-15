@@ -1,6 +1,10 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.sql.*;
 
@@ -49,7 +53,33 @@ class QueryResultsFrame extends JFrame
             }
             
             queryResultsTable = new JTable(rows, columnNames);
-            queryResultsTableScrollPane = new JScrollPane(queryResultsTable);
+			queryResultsTableScrollPane = new JScrollPane(queryResultsTable);
+			
+			queryResultsTable.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent me) {
+					if(me.getClickCount() == 1) {
+						int row = queryResultsTable.getSelectedRow();
+						int col = queryResultsTable.getSelectedColumn();
+						String link = queryResultsTable.getValueAt(row, col).toString();
+						Desktop desktop = java.awt.Desktop.getDesktop();
+
+						if(link.startsWith("https")) {
+							try {
+								URI uri = new URI(link);
+								desktop.browse(uri);
+								
+							}
+							catch(URISyntaxException use) {
+								use.printStackTrace();
+							}
+							catch(IOException ioe) {
+								ioe.printStackTrace();
+							}
+						}
+					}
+				}
+			});
         }
         
         catch (Exception e){
