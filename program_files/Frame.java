@@ -329,7 +329,9 @@ class Frame extends JFrame
                             "FROM vehicles V, purchase_vehicle PV " +
                             "WHERE PV.stock_number = V.stock_number " +
                             "GROUP BY V.make, V.model, V.year, V.new " +
-                            "ORDER BY num_sold_vehicles DESC ";
+                            "ORDER BY num_sold_vehicles DESC " +
+                            "LIMIT 0, 5";
+            
             performQueryAndDisplayResults(query);
         }   
         catch (Exception e){

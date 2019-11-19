@@ -34,7 +34,13 @@ WHERE V.stock_number = TD.stock_number AND TD.customer_id = C.id AND C.id = P.id
 -- Implementation example:
 SELECT D.dealership_number, C.id, P.first_name, P.last_name, TD.stock_number, V.make, V.model, TD.datetime
 FROM customers C, people P, sales_emps E, test_drives TD, vehicles V, dealerships D
-WHERE V.make = ? AND V.model = ? AND V.stock_number = TD.stock_number AND TD.customer_id = C.id AND C.id = P.id AND C.assigned_emp_id = E.id AND E.dealership_number = D.dealership_number;
+WHERE V.make LIKE '%chev%' AND V.model LIKE '%st%' AND V.stock_number = TD.stock_number AND TD.customer_id = C.id AND C.id = P.id AND C.assigned_emp_id = E.id AND E.dealership_number = D.dealership_number;
+
+-- The Java query string would look like this (note that, by default, the MySQL LIKE operator is not case sensitive):
+String query = "SELECT D.dealership_number, C.id, P.first_name, P.last_name, TD.stock_number, V.make, V.model, TD.datetime " +
+                "FROM customers C, people P, sales_emps E, test_drives TD, vehicles V, dealerships D " +
+                "WHERE V.make LIKE \'%" + make + "%\' AND V.model LIKE \'%" + model + "%\' AND V.stock_number = TD.stock_number AND " +
+                "TD.customer_id = C.id AND C.id = P.id AND C.assigned_emp_id = E.id AND E.dealership_number = D.dealership_number";
 */
 
 /*

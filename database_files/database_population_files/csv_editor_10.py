@@ -30,10 +30,10 @@ for sourceRow in sourceFileContents:
     addressesWriter.writerow([sourceRow[0], sourceRow[1], sourceRow[2], sourceRow[3], sourceRow[4]])
         
     if x == 0:
-        dealershipsWriter.writerow([sourceRow[9], sourceRow[0], sourceRow[1]])
+        dealershipsWriter.writerow([sourceRow[9], "dealership_name", sourceRow[0], sourceRow[1]])
         
     elif x > 0 and x <= 20:
-        dealershipsWriter.writerow([x, sourceRow[0], sourceRow[1]])
+        dealershipsWriter.writerow([x, "Dealership #" + str(x), sourceRow[0], sourceRow[1]])
     
     peopleWriter.writerow([sourceRow[5], sourceRow[6], sourceRow[7], sourceRow[8], sourceRow[0], sourceRow[1]])
         
@@ -44,8 +44,11 @@ for sourceRow in sourceFileContents:
         dealership_number = int(sourceRow[9])
         dealership_number = (dealership_number % 20) + 1
     
-    if x == 0:
+    if (x % 4) == 0:
         vehiclesWriter.writerow([sourceRow[16], sourceRow[17], sourceRow[18], sourceRow[19], sourceRow[20], sourceRow[21], sourceRow[22], sourceRow[23], sourceRow[24], sourceRow[25], dealership_number])
+    
+    elif (x % 2) == 0:
+        vehiclesWriter.writerow([sourceRow[16], sourceRow[17], sourceRow[18], sourceRow[19], "0000-00-00 00:00:00", sourceRow[21], sourceRow[22], sourceRow[23], sourceRow[24], sourceRow[25], dealership_number])
     
     else:
         vehiclesWriter.writerow([sourceRow[16], sourceRow[17], sourceRow[18], "0000-00-00 00:00:00", "0000-00-00 00:00:00", sourceRow[21], sourceRow[22], sourceRow[23], sourceRow[24], sourceRow[25], dealership_number])
