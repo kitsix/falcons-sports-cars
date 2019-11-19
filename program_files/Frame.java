@@ -72,7 +72,6 @@ class Frame extends JFrame
 		getRootPane().setDefaultButton(loginButton);
 
         mainPanel = new JPanel();
-        mainPanel.add(testButton);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);

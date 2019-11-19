@@ -1,11 +1,9 @@
 import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -80,7 +78,7 @@ class QueryResultsFrame extends JFrame
 						Image image = bimage;
 
 						//ImageIcon icon = new ImageIcon(image);
-						//rows.addElement(icon);
+						//rows.addElement(image);
 			
 						JPanel imagePanel = new JPanel(){
 						@Override
@@ -90,7 +88,7 @@ class QueryResultsFrame extends JFrame
 						}
 					};
 						//imagePanel.repaint();
-						ImageFrame test = new ImageFrame();
+						ImageFrame test = new ImageFrame(this);
 						test.add(imagePanel);
 						imagePanel.repaint(); 
 					}}
@@ -117,6 +115,7 @@ class QueryResultsFrame extends JFrame
 						int col = queryResultsTable.getSelectedColumn();
 						String link = queryResultsTable.getValueAt(row, col).toString();
 						String test = queryResultsTable.getValueAt(row, col).toString();
+						Object testImage = queryResultsTable.getValueAt(row, col);
 						Desktop desktop = java.awt.Desktop.getDesktop();
 						if(test.startsWith("[B"))
 							System.out.println("hacked");
