@@ -14,15 +14,15 @@ DELETE FROM vehicles WHERE stock_number = 2004 AND dealership_number = 2;
 DELETE FROM vehicles WHERE stock_number = 2005 AND dealership_number = 2;
 DELETE FROM vehicles WHERE stock_number = 2006 AND dealership_number = 2;
 
-INSERT INTO vehicles VALUES(2000, 'Audi', 'A8', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2012', '1', null, 34678.16, '', 1);
-INSERT INTO vehicles VALUES(2001, 'Audi', 'A8', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2012', '1', null, 16270.74, '', 1);
+INSERT INTO vehicles VALUES(2000, 'Audi', 'A8', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2012', '1', null, 34678.16, 'https://www.kbb.com/audi/a8/2012/', 1);
+INSERT INTO vehicles VALUES(2001, 'Audi', 'A8', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2012', '1', null, 16270.74, 'https://www.kbb.com/audi/a8/2012/l-42-quattro-sedan-4d/', 1);
 
-INSERT INTO vehicles VALUES(2002, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '0', null, 80731.34, '', 2);
-INSERT INTO vehicles VALUES(2003, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '0', null, 10180.46, '', 2);
+INSERT INTO vehicles VALUES(2002, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '0', null, 80731.34, 'https://www.kbb.com/chevrolet/astro/1999/', 2);
+INSERT INTO vehicles VALUES(2003, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '0', null, 10180.46, 'https://www.kbb.com/chevrolet/astro-cargo/1999/minivan/', 2);
 
-INSERT INTO vehicles VALUES(2004, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '1', null, 89533.98, '', 2);
-INSERT INTO vehicles VALUES(2005, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '1', null, 80731.34, '', 2);
-INSERT INTO vehicles VALUES(2006, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '1', null, 10180.46, '', 2);
+INSERT INTO vehicles VALUES(2004, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '1', null, 89533.98, 'https://www.kbb.com/chevrolet/astro-passenger/1999/minivan-3d/', 2);
+INSERT INTO vehicles VALUES(2005, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '1', null, 80731.34, 'https://www.kbb.com/chevrolet/astro-cargo/1999/', 2);
+INSERT INTO vehicles VALUES(2006, 'Chevrolet', 'Astro', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '1999', '1', null, 10180.46, 'https://www.kbb.com/chevrolet/astro-passenger/1999/consumer-reviews/', 2);
 
 INSERT INTO sales_emps VALUES (1, 'callkins', 'pass1', 'floor', 1);
 INSERT INTO sales_emps VALUES (2, 'ybigg', 'pass2', 'floor', 1);
@@ -51,11 +51,11 @@ INSERT INTO customers VALUES (18, 'notes18', 6);
 INSERT INTO customers VALUES (19, '', 7);
 INSERT INTO customers VALUES (20, '', 7);
 
-INSERT INTO test_drives VALUES (11, 20, "2019-10-03 07:42:30");
-INSERT INTO test_drives VALUES (11, 135, "2019-11-03 10:42:30");
-INSERT INTO test_drives VALUES (14, 486, "2019-07-03 11:42:30");
-INSERT INTO test_drives VALUES (14, 584, "2019-08-03 12:42:30");
-INSERT INTO test_drives VALUES (14, 889, "2019-09-03 08:42:30");
+INSERT INTO test_drives VALUES (11, 2000, "2019-10-03 07:42:30");
+INSERT INTO test_drives VALUES (11, 2001, "2019-11-03 10:42:30");
+INSERT INTO test_drives VALUES (14, 2002, "2019-07-03 11:42:30");
+INSERT INTO test_drives VALUES (14, 2003, "2019-08-03 12:42:30");
+INSERT INTO test_drives VALUES (14, 2004, "2019-09-03 08:42:30");
 INSERT INTO purchase_vehicle VALUES (11, 20, 5);
 INSERT INTO purchase_vehicle VALUES (11, 135, 5);
 INSERT INTO purchase_vehicle VALUES (14, 486, 5);
