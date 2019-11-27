@@ -1,3 +1,4 @@
+
 CREATE TABLE Addresses(
 	street VARCHAR(100),
 	zip VARCHAR(10),
@@ -135,9 +136,330 @@ CREATE VIEW Customers_Purchased_Vehicles AS
 	FROM customers C, Sales_Emps SE, purchase_vehicle PV, vehicles V
 	WHERE C.assigned_emp_id = SE.id AND SE.dealership_number = V.dealership_number AND C.id = PV.customer_id AND V.stock_number = PV.stock_number;
 
+-- Transaction 1 Part 1: A manager/salesperson should be able to add a customer.
+-- NOTE: all the SELECT statements are for testing purposes to make sure that the changes performed correctly.
+DELIMITER $$
+CREATE PROCEDURE add_customer(
+	IN id INT(11), 
+    IN first_name VARCHAR(100), 
+    IN last_name VARCHAR(100),
+    IN email VARCHAR(100),
+    IN street VARCHAR(100),
+    IN zip VARCHAR(10),
+    IN city VARCHAR(100),
+    IN state VARCHAR(100),
+    IN phone_number INT(11),
+	IN customer_notes VARCHAR(1000),
+    IN assigned_emp_id INT(11))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: add_customer: INSERT operations rolled back';
+	END;
+    
+    START TRANSACTION;
+		INSERT INTO addresses VALUES (street, zip, city, state, phone_number);
+		INSERT INTO people VALUES (id, first_name, last_name, email, street, zip);
+		INSERT INTO customers VALUES (id, customer_notes, assigned_emp_id);
+	COMMIT;
+    
+	SELECT *
+    FROM addresses a, people p, customers c
+    WHERE p.id = id AND c.id = id AND p.street = a.street AND p.zip = a.zip;
+END;$$
+DELIMITER ;
 
+-- Transaction 1 Part 2: A manager/salesperson should be able to update a customer's personal info.
+-- NOTE: all the SELECT statements are for testing purposes to make sure that the changes performed correctly.
+DELIMITER $$
+CREATE PROCEDURE update_customer_personal_info(
+	IN id INT(11), 
+    IN first_name VARCHAR(100), 
+    IN last_name VARCHAR(100),
+    IN email VARCHAR(100),
+    IN street VARCHAR(100),
+    IN zip VARCHAR(10),
+    IN city VARCHAR(100),
+    IN state VARCHAR(100),
+    IN phone_number INT(11))
+BEGIN
+	DECLARE temp_street VARCHAR(100) DEFAULT NULL;
+    DECLARE temp_zip VARCHAR(10) DEFAULT NULL;
 
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_customer_personal_info: UPDATE operations rolled back';
+	END;
 
-
-
+	SELECT p.street, p.zip
+	INTO temp_street, temp_zip
+	FROM people p
+	WHERE p.id = id;
 	
+    START TRANSACTION;
+		UPDATE addresses a SET
+		a.street = street,
+		a.zip = zip,
+		a.city = city,
+		a.state = state,
+		a.phone_number = phone_number
+		WHERE a.street = temp_street AND a.zip = temp_zip;
+
+		UPDATE people p SET
+		p.first_name = first_name,
+		p.last_name = last_name,
+		p.email = email
+		WHERE p.id = id;
+	COMMIT;
+    
+	SELECT *
+    FROM addresses a, people p, customers c
+    WHERE p.id = id AND c.id = id AND p.street = a.street AND p.zip = a.zip;
+END;$$
+DELIMITER ;
+
+
+-- Transaction 2: A manager/salesperson should be able to update a customer's visit history including locations, cars test-driven (if any), and customer notes.
+-- NOTE: all the SELECT statements are for testing purposes to make sure that the changes performed correctly.
+DELIMITER $$
+CREATE PROCEDURE update_customer_notes(
+	IN id INT(11),
+	IN customer_notes VARCHAR(1000))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_customer_notes: UPDATE operations rolled back';
+	END;
+	
+    START TRANSACTION;
+		UPDATE customers c SET
+		c.customer_notes = customer_notes
+		WHERE c.id = id;
+	COMMIT;
+    
+	SELECT *
+    FROM customers c
+    WHERE c.id = id;
+END;$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE add_customer_test_driven_vehicle(
+	IN id INT(11), 
+	IN stock_number INT(11),
+	IN datetime VARCHAR(100))
+BEGIN
+	DECLARE customer_dealership_number, vehicle_dealership_number INT(11) DEFAULT NULL;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: add_customer_test_driven_vehicle: INSERT operations rolled back';
+	END;
+    
+    SELECT td.*
+    FROM test_drives td
+    WHERE td.customer_id = id AND td.stock_number = stock_number;
+    
+    -- The following SQL statement is NOT testing code -- it is required for the conditional in the transaction.
+    SELECT se.dealership_number, v.dealership_number
+    INTO customer_dealership_number, vehicle_dealership_number
+    FROM customers c, sales_emps se, vehicles v
+    WHERE c.id = id AND c.assigned_emp_id = se.id AND v.stock_number = stock_number AND v.dealership_number = se.dealership_number;
+    
+    SELECT customer_dealership_number, vehicle_dealership_number;
+    
+	START TRANSACTION;
+		BEGIN IF customer_dealership_number IS NOT NULL AND vehicle_dealership_number IS NOT NULL THEN
+			INSERT INTO test_drives VALUES (id, stock_number, datetime);
+		ELSE
+			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: add_customer_test_driven_vehicle: customer_dealership_number != vehicle_dealership_number';
+		END IF;
+	COMMIT;
+    
+	SELECT td.*
+    FROM test_drives td
+    WHERE td.customer_id = id AND td.stock_number = stock_number;
+END;
+END $$
+DELIMITER ;
+
+-- Transaction 3: A manager should be able to reassign customers to individual salespeople.
+-- NOTE: all the SELECT statements are for testing purposes to make sure that the changes performed correctly.
+DELIMITER $$
+CREATE PROCEDURE update_customer_assigned_employee(
+	IN id INT(11),
+    IN assigned_emp_id INT(11))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_customer_assigned_employee: UPDATE operations rolled back';
+	END;
+
+	SELECT *
+    FROM customers c
+    WHERE c.id = id;
+	
+    START TRANSACTION;
+		UPDATE customers c SET
+        c.assigned_emp_id = assigned_emp_id
+		WHERE c.id = id;
+	COMMIT;
+    
+	SELECT *
+    FROM customers c
+    WHERE c.id = id;
+END;$$
+DELIMITER ;
+
+-- Transaction 4 Part 1: A manager/salesperson should be able to add a sales employee.
+DELIMITER $$
+CREATE PROCEDURE add_sales_emp(
+	IN id INT(11), 
+    IN username VARCHAR(100),
+    IN password VARCHAR(100),
+    IN role VARCHAR(100),
+    IN dealership_number INT(11),
+    IN first_name VARCHAR(100), 
+    IN last_name VARCHAR(100),
+    IN email VARCHAR(100),
+    IN street VARCHAR(100),
+    IN zip VARCHAR(10),
+    IN city VARCHAR(100),
+    IN state VARCHAR(100),
+    IN phone_number INT(11))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: add_sales_emp: INSERT operations rolled back';
+	END;
+    
+    START TRANSACTION;
+		INSERT INTO addresses VALUES (street, zip, city, state, phone_number);
+		INSERT INTO people VALUES (id, first_name, last_name, email, street, zip);
+		INSERT INTO sales_emps VALUES (id, username, password, role, dealership_number);
+	COMMIT;
+    
+	SELECT *
+    FROM sales_emps se
+    WHERE se.id = id;
+END;$$
+DELIMITER ;
+
+-- Transaction 4 Part 2: A manager/salesperson should be able to remove a sales employee.
+-- NOTE: This procedure will NOT remove the corresponding street/zip combination from addresses for the removed sales emp -- this is fixable via an ON DELETE trigger.
+-- This is also the case for any customer who has the removed sales emp assigned to them.
+DELIMITER $$
+CREATE PROCEDURE remove_sales_emp(
+	IN id INT(11))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: remove_sales_emp: DELETE operations rolled back';
+	END;
+    
+    START TRANSACTION;
+		DELETE FROM people WHERE people.id = id;
+	COMMIT;
+    
+	SELECT *
+    FROM sales_emps se
+    WHERE se.id = id;
+END;$$
+DELIMITER ;
+
+-- Transaction 4 Part 1: A manager should be able to update the inventory after a vehicle is added.
+DELIMITER $$
+CREATE PROCEDURE add_vehicle(
+	IN stock_number INT(11), 
+    IN make VARCHAR(100),
+    IN model VARCHAR(100),
+    IN sale_datetime VARCHAR(100),
+    IN delivery_datetime VARCHAR(100),
+    IN year INT(11), 
+    IN new BOOLEAN,
+    IN image BLOB,
+    IN price DECIMAL(12, 2),
+    IN car_and_driver_hyperlink VARCHAR(100),
+    IN dealership_number INT(11))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: add_vehicle: INSERT operations rolled back';
+	END;
+    
+	SELECT *
+    FROM vehicles v
+    WHERE v.stock_number = stock_number;
+       
+    START TRANSACTION;
+		INSERT INTO vehicles VALUES(stock_number, make, model, sale_datetime, delivery_datetime, year, new, image, price, car_and_driver_hyperlink, dealership_number);
+	COMMIT;
+    
+	SELECT *
+    FROM vehicles v
+    WHERE v.stock_number = stock_number;
+END;$$
+DELIMITER ;
+
+-- Transaction 4 Part 2: A manager should be able to update the inventory after a vehicle is sold.
+DELIMITER $$
+CREATE PROCEDURE update_sold_vehicle(
+	IN stock_number INT(11), 
+    IN sale_datetime VARCHAR(100),
+    IN dealership_number INT(11))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_sold_vehicle: UPDATE operations rolled back';
+	END;
+    
+	SELECT *
+    FROM vehicles v
+    WHERE v.stock_number = stock_number;
+    
+    START TRANSACTION;
+		UPDATE vehicles SET vehicles.sale_datetime = sale_datetime WHERE vehicles.stock_number = stock_number AND vehicles.dealership_number = dealership_number;
+	COMMIT;
+    
+	SELECT *
+    FROM vehicles v
+    WHERE v.stock_number = stock_number;
+END;$$
+DELIMITER ;
+
+-- Transaction 4 Part 3: A manager should be able to update the inventory after a vehicle is delivered.
+-- NOTE: this one wasn't on the list of transactions, but I added it anyway.
+DELIMITER $$
+CREATE PROCEDURE update_delivered_vehicle(
+	IN stock_number INT(11), 
+    IN delivery_datetime VARCHAR(100),
+    IN dealership_number INT(11))
+BEGIN
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_delivered_vehicle: UPDATE operations rolled back';
+	END;
+    
+	SELECT *
+    FROM vehicles v
+    WHERE v.stock_number = stock_number;
+    
+    START TRANSACTION;
+		UPDATE vehicles SET vehicles.delivery_datetime = delivery_datetime WHERE vehicles.stock_number = stock_number AND vehicles.dealership_number = dealership_number;
+	COMMIT;
+    
+	SELECT *
+    FROM vehicles v
+    WHERE v.stock_number = stock_number;
+END;$$
+DELIMITER ;
