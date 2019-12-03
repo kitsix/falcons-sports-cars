@@ -13,11 +13,41 @@ implements ActionListener
     JPasswordField          passwordTF;
     JLabel                  usernameLabel, passwordLabel;
     JPanel                  myMainPanel, buttonP;
-    JButton                 loginButton, exitButton;
+    JButton                 loginButton, exitButton, submitButton;
     ConnectionHandler       connectionHandler;
     Frame                   mainFrame;
     String                  tempUserName;
     boolean                 loggedIn;
+
+
+
+    LoginDialog(Frame frame){
+
+        this.mainFrame = frame;
+        
+        buildBasicGui(); 
+
+        submitButton = new JButton("Submit");
+        submitButton.setActionCommand("SUBMIT BUTTON");
+        submitButton.addActionListener(this);
+
+        exitButton = new JButton("Exit");
+        exitButton.setActionCommand("EXIT");
+        exitButton.addActionListener(this);
+        
+        buttonP = new JPanel(new FlowLayout());
+        buttonP.add(loginButton);
+        buttonP.add(exitButton);
+        add (buttonP, BorderLayout.SOUTH);
+
+        getRootPane().setDefaultButton(loginButton);
+        
+        setSize(300, 300);
+        setVisible(true);
+        setLocationRelativeTo(frame);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setResizable(false); 
+}
 
     LoginDialog(Frame frame, ConnectionHandler connectionHandler){
 

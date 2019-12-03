@@ -17,6 +17,7 @@ class QueryFrame extends JFrame
 
     QueryFrame(Frame host){  
 
+		System.out.println("in here");
 		this.host = host;
 		this.addWindowListener(this);
 

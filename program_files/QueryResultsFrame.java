@@ -11,15 +11,14 @@ import java.sql.*;
 import javax.imageio.ImageIO;
 import javax.swing.table.*;
 
-
-
 // This is a simple class for displaying query results.
 // Note that each instance of this class is stored in a the queryResultsFrameVector data member of the Frame class.
 // This is to allow a user to dispose of all currently open QueryResultsFrame with a single click of the "Close Query Results" button.
 class QueryResultsFrame extends JFrame
-	implements WindowListener
+	implements WindowListener, ActionListener
 {
 	Frame 				host;
+	LoginDialog		dialog;
     JLabel 				queryLabel, queryResultsTableLabel;
     JTextArea 			queryArea;
     JScrollPane 		queryAreaScrollPane = null;
@@ -162,6 +161,12 @@ class QueryResultsFrame extends JFrame
 
         layout.setVerticalGroup(vGroup);
 
+		JButton testButton;
+		testButton = new JButton("hi(:");
+		testButton.addActionListener(this);
+		testButton.setActionCommand("GO");
+
+		contentPane.add(testButton, BorderLayout.NORTH);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         Toolkit tk;
@@ -177,6 +182,15 @@ class QueryResultsFrame extends JFrame
 		setLocationRelativeTo(this.host);      
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
+	}
+
+	public void actionPerformed(ActionEvent e){
+		String cmd = e.getActionCommand();
+
+		if(cmd.equals("GO")){
+			System.out.println("GO GO GOOOOOOOOOOO");
+			dialog = new LoginDialog(this.host);
+		}
 	}
 
 	public void windowActivated(WindowEvent e){

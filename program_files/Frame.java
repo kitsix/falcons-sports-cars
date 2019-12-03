@@ -1,9 +1,7 @@
 import java.sql.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import javafx.embed.swing.SwingFXUtils;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -56,8 +54,8 @@ class Frame extends JFrame
         
         this.addWindowListener(this);
 
-		Container contentPane = getContentPane();
-
+        Container contentPane = getContentPane();
+        
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(this);
 		loginButton.setActionCommand("LOGIN");
