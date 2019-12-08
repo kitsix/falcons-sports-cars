@@ -9,9 +9,9 @@ class LoginDialog  extends  JDialog
 implements ActionListener
 {
     String                  role;
-    JTextField              usernameTF;
+    JTextField              usernameTF, queryTF;
     JPasswordField          passwordTF;
-    JLabel                  usernameLabel, passwordLabel;
+    JLabel                  usernameLabel, passwordLabel, queryLabel;
     JPanel                  myMainPanel, buttonP;
     JButton                 loginButton, exitButton, submitButton;
     ConnectionHandler       connectionHandler;
@@ -25,7 +25,7 @@ implements ActionListener
 
         this.mainFrame = frame;
         
-        buildBasicGui(); 
+        queryGui(); 
 
         submitButton = new JButton("Submit");
         submitButton.setActionCommand("SUBMIT BUTTON");
@@ -36,7 +36,7 @@ implements ActionListener
         exitButton.addActionListener(this);
         
         buttonP = new JPanel(new FlowLayout());
-        buttonP.add(loginButton);
+        buttonP.add(submitButton);
         buttonP.add(exitButton);
         add (buttonP, BorderLayout.SOUTH);
 
@@ -71,7 +71,7 @@ implements ActionListener
 
         getRootPane().setDefaultButton(loginButton);
         
-        setSize(300, 300);
+        setSize(300, 200);
         setVisible(true);
         setLocationRelativeTo(frame);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -105,6 +105,36 @@ implements ActionListener
         
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(usernameLabel).addComponent(usernameTF));
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(passwordLabel).addComponent(passwordTF));
+        layout.setVerticalGroup(vGroup);
+        
+        add (myMainPanel, BorderLayout.CENTER);
+        setTitle("Login");
+
+    
+    } // end of buildbasicGui
+
+    void queryGui(){
+        
+        myMainPanel = new JPanel();
+        
+        GroupLayout layout = new GroupLayout(myMainPanel);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+        
+        queryLabel = new JLabel("Username");
+        queryTF = new JTextField(10);
+        
+        myMainPanel.setLayout (layout);
+        
+        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+        
+        hGroup.addGroup(layout.createParallelGroup().addComponent(queryLabel));
+        hGroup.addGroup(layout.createParallelGroup().addComponent(queryTF));
+        layout.setHorizontalGroup(hGroup);
+        
+        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+        
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryLabel).addComponent(queryTF));
         layout.setVerticalGroup(vGroup);
         
         add (myMainPanel, BorderLayout.CENTER);

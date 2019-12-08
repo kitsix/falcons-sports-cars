@@ -18,9 +18,8 @@ class QueryResultsFrame extends JFrame
 	implements WindowListener, ActionListener
 {
 	Frame 				host;
-	LoginDialog		dialog;
+	LoginDialog			dialog;
     JLabel 				queryLabel, queryResultsTableLabel;
-    JTextArea 			queryArea;
     JScrollPane 		queryAreaScrollPane = null;
     JTable 				queryResultsTable;
     JScrollPane 		queryResultsTableScrollPane = null;
@@ -35,13 +34,8 @@ class QueryResultsFrame extends JFrame
 		boolean printImage = false;
 
         try{   
-            queryArea = new JTextArea(pStatement.toString());
-			queryArea.setEditable(false);
-			//queryAreaScrollPane = new JScrollPane(queryArea);      
-     
             Vector columnNames = new Vector<Object>();
             Vector rows = new Vector<Object>();
-            
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             
             for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
@@ -86,7 +80,6 @@ class QueryResultsFrame extends JFrame
 							g.drawImage(image, 50, 50, 100, 100, this);
 						}
 					};
-						//imagePanel.repaint();
 						ImageFrame test = new ImageFrame(this);
 						test.add(imagePanel);
 						imagePanel.repaint(); 
@@ -110,6 +103,7 @@ class QueryResultsFrame extends JFrame
 				@Override
 				public void mouseClicked(MouseEvent me) {
 					if(me.getClickCount() == 1) {
+						System.out.println("one click");
 						int row = queryResultsTable.getSelectedRow();
 						int col = queryResultsTable.getSelectedColumn();
 						String link = queryResultsTable.getValueAt(row, col).toString();
@@ -132,6 +126,10 @@ class QueryResultsFrame extends JFrame
 							}
 						}
 					}
+
+					if(me.getClickCount() == 2){
+						System.out.println("you are going to edit something now");
+					}
 				}
 			});
         }
@@ -147,18 +145,12 @@ class QueryResultsFrame extends JFrame
 		layout.setAutoCreateContainerGaps(true);
 
 		GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
-
 		hGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-			//.addComponent(queryAreaScrollPane)
             .addComponent(queryResultsTableScrollPane));
-
 		layout.setHorizontalGroup(hGroup);
 
 		GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
-
-		//vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryAreaScrollPane));
 		vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryResultsTableScrollPane));
-
         layout.setVerticalGroup(vGroup);
 
 		JButton testButton;
