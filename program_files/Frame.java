@@ -66,6 +66,7 @@ class Frame extends JFrame
 		getRootPane().setDefaultButton(loginButton);
 
         mainPanel = new JPanel();
+        mainPanel.add(testButton);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);
@@ -342,6 +343,20 @@ class Frame extends JFrame
             e.printStackTrace();
         }        
     }
+
+
+    public void getAllCustomers(){
+        try{
+            String query = "SELECT * " +
+                            "FROM customers";
+            
+            performQueryAndDisplayResults(query);
+        }
+            
+        catch (Exception e){
+            e.printStackTrace();
+        }  
+    }
         
     public void getTotalDealershipSales(){
         System.out.println("Frame: TOTAL_DEALERSHIP_SALES");                                
@@ -394,7 +409,8 @@ class Frame extends JFrame
                 exit();
             else if (cmd.equals("IMAGE")){
                 System.out.println("image button has been pressed..");
-                picture();
+                //picture();
+                getAllCustomers();
             }
 		}
 

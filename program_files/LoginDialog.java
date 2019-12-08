@@ -20,6 +20,78 @@ implements ActionListener
     boolean                 loggedIn;
 
 
+    LoginDialog(Frame frame, String name){
+
+        this.mainFrame = frame;
+        myMainPanel = new JPanel();
+
+        JLabel idLabel, notesLabel, empIdLabel;
+        JTextField idTF, notesTF, empIdTF;
+        
+        GroupLayout layout = new GroupLayout(myMainPanel);
+        
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+        
+        idLabel = new JLabel("Customer ID: ");
+        notesLabel = new JLabel("Customer Notes: ");
+        empIdLabel = new JLabel("Assigned Employee ID: ");
+        
+        idTF = new JTextField(20);
+        notesTF = new JTextField(20);
+        empIdTF = new JTextField(20);
+        
+        myMainPanel.setLayout (layout);
+        
+        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+        
+        hGroup.addGroup(layout.createParallelGroup().addComponent(idLabel).addComponent(notesLabel).addComponent(empIdLabel));
+        hGroup.addGroup(layout.createParallelGroup().addComponent(idTF).addComponent(notesTF).addComponent(empIdTF));
+        
+        layout.setHorizontalGroup(hGroup);
+        
+        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+        
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(idLabel).addComponent(idTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(notesLabel).addComponent(notesTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(empIdLabel).addComponent(empIdTF));
+
+        layout.setVerticalGroup(vGroup);
+        
+        add (myMainPanel, BorderLayout.CENTER);
+        setTitle("Add Customer");
+
+        submitButton = new JButton("Submit");
+        submitButton.setActionCommand("ADD CUSTOMER");
+        submitButton.addActionListener(this);
+
+        exitButton = new JButton("Exit");
+        exitButton.setActionCommand("EXIT");
+        exitButton.addActionListener(this);
+        
+        buttonP = new JPanel(new FlowLayout());
+        buttonP.add(submitButton);
+        buttonP.add(exitButton);
+        add (buttonP, BorderLayout.SOUTH);
+
+        getRootPane().setDefaultButton(loginButton);
+        
+        setSize(300, 300);
+        setVisible(true);
+        setLocationRelativeTo(frame);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setResizable(false); 
+}
+
+
+
+
+
+
+
+
+
+
 
     LoginDialog(Frame frame){
 
@@ -141,15 +213,15 @@ implements ActionListener
     
     } // end of buildbasicGui
 
-    public void actionPerformed (ActionEvent e){
-        String username = usernameTF.getText().trim();
-        String password = new String(passwordTF.getPassword());
-    
+    public void actionPerformed (ActionEvent e){    
         if (e.getActionCommand().equals("LOGIN BUTTON")){
             login(this.connectionHandler);
         }
         else if (e.getActionCommand().equals("EXIT")){
             this.dispose();
+        }
+        else if(e.getActionCommand().equals("ADD CUSTOMER")){
+            System.out.println("hey we're adding a customer (:");
         }
     } 
 

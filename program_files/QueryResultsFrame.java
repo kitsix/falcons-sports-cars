@@ -189,11 +189,19 @@ class QueryResultsFrame extends JFrame
         layout.setVerticalGroup(vGroup);
 
 		JButton testButton;
-		testButton = new JButton("hi(:");
+		testButton = new JButton("Add");
 		testButton.addActionListener(this);
 		testButton.setActionCommand("GO");
 
-		contentPane.add(testButton, BorderLayout.NORTH);
+		JButton deleteButton = new JButton("Delete");
+		deleteButton.addActionListener(this);
+		deleteButton.setActionCommand("DELETE");
+
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(testButton);
+		buttonPanel.add(deleteButton);
+
+		contentPane.add(buttonPanel, BorderLayout.NORTH);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         Toolkit tk;
@@ -215,8 +223,15 @@ class QueryResultsFrame extends JFrame
 		String cmd = e.getActionCommand();
 
 		if(cmd.equals("GO")){
-			System.out.println("GO GO GOOOOOOOOOOO");
-			dialog = new LoginDialog(this.host);
+			//dialog = new LoginDialog(this.host);
+			dialog = new LoginDialog(this.host, "hi");
+		}
+		else if(cmd.equals("DELETE")){
+			int row = queryResultsTable.getSelectedRow();
+			String query = "DELETE FROM " + tableName + " WHERE id = " + queryResultsTable.getValueAt(row, 0);
+			this.host.performUpdateQuery(query);
+			model.removeRow(row);
+
 		}
 	}
 
@@ -259,7 +274,7 @@ class QueryResultsFrame extends JFrame
 		System.out.println("this was edited..." + temp + "and it was this col:" + col);
 		System.out.println("table name...." + tableName);
 
-		if(model.getColumnName(col).equals("first_name")){
+		if(model.getColumnName(col).equals("dealership_number")){
 			String query = "UPDATE " + tableName + " " +
 							"SET " + model.getColumnName(col) + " = " + newValue + " " +
 							"WHERE " + "id" + "  = " + id;
