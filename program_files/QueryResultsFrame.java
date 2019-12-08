@@ -132,38 +132,19 @@ class QueryResultsFrame extends JFrame
 			model.addTableModelListener(new TableModelListener() {
 				@Override
 				public void tableChanged(TableModelEvent e) {
+					int col = e.getColumn();
+					int row = e.getLastRow();
+					String newValue = model.getValueAt(row, col).toString();
+					String id = model.getValueAt(row, 0).toString();
+
 					System.out.println("apply additional action");
-					int pos = e.getColumn();
 					String temp = e.getSource().toString();
-					
-					System.out.println("this was edited..." + temp + "and it was this col:" + pos);
+					System.out.println(model.getColumnName(col));
+					System.out.println(id);	
+					System.out.println(newValue);			
+					System.out.println("this was edited..." + temp + "and it was this col:" + col);
 				}
 			});
-
-			queryResultsTable.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyPressed(KeyEvent e) {
-					if (e.getKeyCode() ==  36/*KeyEvent.VK_ENTER*/) {
-						System.out.println("YOU PRESSED ENTER*****");
-						int row = queryResultsTable.getSelectedRow();
-						int column = queryResultsTable.getSelectedColumn();
-		
-						// resul is the new value to insert in the DB
-						String resul = queryResultsTable.getValueAt(row, column).toString();
-						System.out.println(resul);
-						// id is the primary key of my DB
-						String id = queryResultsTable.getValueAt(row, 0).toString();
-						System.out.println(id);
-		
-						// update is my method to update. Update needs the id for
-						// the where clausule. resul is the value that will receive
-						// the cell and you need column to tell what to update.
-						//update(id, resul, column);
-		
-					}
-				}
-			});
-
 
 
 			queryResultsTable.addMouseListener(new MouseAdapter() {
