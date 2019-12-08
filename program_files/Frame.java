@@ -326,7 +326,7 @@ class Frame extends JFrame
             String query = "SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink, V.image " +
                             "FROM vehicles V, purchase_vehicle PV " +
                             "WHERE PV.stock_number = V.stock_number " +
-                            "GROUP BY V.make, V.model, V.year, V.new " +
+                            "GROUP BY V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink, V.image " +
                             "ORDER BY num_sold_vehicles DESC " +
                             "LIMIT 0, 5";
             

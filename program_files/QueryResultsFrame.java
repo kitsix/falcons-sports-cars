@@ -10,6 +10,9 @@ import java.util.*;
 import java.sql.*;
 import javax.imageio.ImageIO;
 import javax.swing.table.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 
 // This is a simple class for displaying query results.
 // Note that each instance of this class is stored in a the queryResultsFrameVector data member of the Frame class.
@@ -93,12 +96,76 @@ class QueryResultsFrame extends JFrame
             public Class getColumnClass(int column)
             {
                 return getValueAt(0, column).getClass();
-            }
-        };
+			}
+
+			public String getText(int column){
+				return getColumnName(column);
+			}
+
+			public String getID(int row){
+				return getValueAt(row, 0).toString();
+			}
+		};
+
+
+		// AbstractTableModel abstractModel = new AbstractTableModel() {
+		// 	public String getColumnName(int col) {
+		// 		return columnNames[col].toString();
+		// 	}
+		// 	public int getRowCount() { return rowData.length; }
+		// 	public int getColumnCount() { return columnNames.length; }
+		// 	public Object getValueAt(int row, int col) {
+		// 		return rowData[row][col];
+		// 	}
+		// 	public boolean isCellEditable(int row, int col)
+		// 		{ return true; }
+		// 	public void setValueAt(Object value, int row, int col) {
+		// 		rowData[row][col] = value;
+		// 		fireTableCellUpdated(row, col);
+		// 	}
+		// }
             
             queryResultsTable = new JTable(model);
 			queryResultsTableScrollPane = new JScrollPane(queryResultsTable);
-			
+
+
+			model.addTableModelListener(new TableModelListener() {
+				@Override
+				public void tableChanged(TableModelEvent e) {
+					System.out.println("apply additional action");
+					int pos = e.getColumn();
+					String temp = e.getSource().toString();
+					
+					System.out.println("this was edited..." + temp + "and it was this col:" + pos);
+				}
+			});
+
+			queryResultsTable.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					if (e.getKeyCode() ==  36/*KeyEvent.VK_ENTER*/) {
+						System.out.println("YOU PRESSED ENTER*****");
+						int row = queryResultsTable.getSelectedRow();
+						int column = queryResultsTable.getSelectedColumn();
+		
+						// resul is the new value to insert in the DB
+						String resul = queryResultsTable.getValueAt(row, column).toString();
+						System.out.println(resul);
+						// id is the primary key of my DB
+						String id = queryResultsTable.getValueAt(row, 0).toString();
+						System.out.println(id);
+		
+						// update is my method to update. Update needs the id for
+						// the where clausule. resul is the value that will receive
+						// the cell and you need column to tell what to update.
+						//update(id, resul, column);
+		
+					}
+				}
+			});
+
+
+
 			queryResultsTable.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent me) {
