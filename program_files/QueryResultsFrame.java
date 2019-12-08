@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.sql.*;
 import javax.imageio.ImageIO;
-import javax.swing.table.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -18,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
 // Note that each instance of this class is stored in a the queryResultsFrameVector data member of the Frame class.
 // This is to allow a user to dispose of all currently open QueryResultsFrame with a single click of the "Close Query Results" button.
 class QueryResultsFrame extends JFrame
-	implements WindowListener, ActionListener
+	implements WindowListener, ActionListener, TableModelListener
 {
 	Frame 				host;
 	LoginDialog			dialog;
@@ -27,7 +26,9 @@ class QueryResultsFrame extends JFrame
     JTable 				queryResultsTable;
     JScrollPane 		queryResultsTableScrollPane = null;
     JPanel 				mainPanel;
-    GroupLayout 		layout;
+	GroupLayout 		layout;
+	DefaultTableModel   model;
+	String				tableName;
 
     QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet){        
 		
@@ -39,7 +40,8 @@ class QueryResultsFrame extends JFrame
         try{   
             Vector columnNames = new Vector<Object>();
             Vector rows = new Vector<Object>();
-            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+			ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+			tableName = resultSetMetaData.getTableName(1);
             
             for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
 				columnNames.addElement(resultSetMetaData.getColumnName(i));
@@ -89,7 +91,7 @@ class QueryResultsFrame extends JFrame
 					}}
 			}
 
-			DefaultTableModel model = new DefaultTableModel(rows, columnNames)
+			model = new DefaultTableModel(rows, columnNames)
         {
             //  Returning the Class of each column will allow different
             //  renderers to be used based on Class
@@ -129,22 +131,7 @@ class QueryResultsFrame extends JFrame
 			queryResultsTableScrollPane = new JScrollPane(queryResultsTable);
 
 
-			model.addTableModelListener(new TableModelListener() {
-				@Override
-				public void tableChanged(TableModelEvent e) {
-					int col = e.getColumn();
-					int row = e.getLastRow();
-					String newValue = model.getValueAt(row, col).toString();
-					String id = model.getValueAt(row, 0).toString();
-
-					System.out.println("apply additional action");
-					String temp = e.getSource().toString();
-					System.out.println(model.getColumnName(col));
-					System.out.println(id);	
-					System.out.println(newValue);			
-					System.out.println("this was edited..." + temp + "and it was this col:" + col);
-				}
-			});
+			model.addTableModelListener(this);
 
 
 			queryResultsTable.addMouseListener(new MouseAdapter() {
@@ -255,5 +242,30 @@ class QueryResultsFrame extends JFrame
 	}
 
 	public void windowOpened(WindowEvent e){
+	}
+
+	@Override
+	public void tableChanged(TableModelEvent e) {
+		int col = e.getColumn();
+		int row = e.getLastRow();
+		String newValue = model.getValueAt(row, col).toString();
+		String id = model.getValueAt(row, 0).toString();
+
+		System.out.println("apply additional action");
+		String temp = e.getSource().toString();
+		System.out.println(model.getColumnName(col));
+		System.out.println(id);	
+		System.out.println(newValue);			
+		System.out.println("this was edited..." + temp + "and it was this col:" + col);
+		System.out.println("table name...." + tableName);
+
+		if(model.getColumnName(col).equals("first_name")){
+			String query = "UPDATE " + tableName + " " +
+							"SET " + model.getColumnName(col) + " = " + newValue + " " +
+							"WHERE " + "id" + "  = " + id;
+
+		this.host.performUpdateQuery(query);
+		}
+
 	}
 }

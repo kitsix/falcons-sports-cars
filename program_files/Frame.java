@@ -1,14 +1,10 @@
 import java.sql.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javafx.embed.swing.SwingFXUtils;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.*;
 import java.awt.Image;
 
@@ -211,11 +207,9 @@ class Frame extends JFrame
 		}
 	}
     
-    public void performQuery(){
-        try{
-            System.out.println("Frame: PERFORM_QUERY");
-            
-            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(queryFrame.getQuery());
+    public void performQuery(String query){
+        try{            
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
             QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
             
@@ -228,7 +222,19 @@ class Frame extends JFrame
         catch (Exception e){
             e.printStackTrace();
         }
-	}
+    }
+    
+    public void performUpdateQuery(String query){
+        try{            
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);
+            int result = connectionHandler.performUpdateQuery(pstatement);
+            
+        }
+            
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     
     public void performQueryAndDisplayResults(String query){
         try{

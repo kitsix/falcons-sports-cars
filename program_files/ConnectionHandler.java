@@ -104,6 +104,16 @@ class ConnectionHandler{
         
         return resultSet;
     }
+
+    public int performUpdateQuery(PreparedStatement pstatement) throws Exception{
+        System.out.println("ConnectionHandler: performQuery: query = " + pstatement);
+            
+        int result = pstatement.executeUpdate();
+                
+        // printResultSet(resultSet);
+        
+        return result;
+    }
     
     // Test function
     public ResultSet getAllUsers() throws Exception{
