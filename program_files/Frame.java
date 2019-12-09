@@ -212,12 +212,12 @@ class Frame extends JFrame
         try{            
             PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
-            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
+            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet, " ");  
             
             queryResultsCount += 1;
             
             queryResultsFrameVector.addElement(queryResultsFrame);        
-            queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
+            //queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
         }
             
         catch (Exception e){
@@ -237,17 +237,17 @@ class Frame extends JFrame
         }
     }
     
-    public void performQueryAndDisplayResults(String query){
+    public void performQueryAndDisplayResults(String query, String queryName){
         try{
             PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);        
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
             
-            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
+            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet, queryName);  
             
             queryResultsCount += 1;
             
             queryResultsFrameVector.addElement(queryResultsFrame);        
-            queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
+            //queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
         }
             
         catch (Exception e){
@@ -293,7 +293,7 @@ class Frame extends JFrame
                 String query = "SELECT CI.id, CI.first_name, CI.last_name, CI.customer_notes, CTDV.dealership_number, D.street, D.zip, CTDV.stock_number, CTDV.datetime " +
                                 "FROM customers_info CI, customers_test_driven_vehicles CTDV, dealerships D "  + 
                                 "WHERE CI.id = \'" + customerID + "\' AND CI.id = CTDV.id AND CTDV.dealership_number = D.dealership_number";
-                performQueryAndDisplayResults(query);
+                performQueryAndDisplayResults(query, "Customer Visit Information");
             }
                 
             catch (Exception e){
@@ -320,7 +320,7 @@ class Frame extends JFrame
                             "WHERE V.make = \'" + make + "\' AND V.model = \'" + model + "\' AND V.stock_number = TD.stock_number AND " +
                             "TD.customer_id = C.id AND C.id = P.id AND C.assigned_emp_id = E.id AND E.dealership_number = D.dealership_number";
             
-            performQueryAndDisplayResults(query);
+            performQueryAndDisplayResults(query, "Test Drives");
         }
         
         else
@@ -337,7 +337,7 @@ class Frame extends JFrame
                             "ORDER BY num_sold_vehicles DESC " +
                             "LIMIT 0, 5";
             
-            performQueryAndDisplayResults(query);
+            performQueryAndDisplayResults(query, "Top Five Vehicles");
         }   
         catch (Exception e){
             e.printStackTrace();
@@ -350,7 +350,7 @@ class Frame extends JFrame
             String query = "SELECT * " +
                             "FROM customers";
             
-            performQueryAndDisplayResults(query);
+            performQueryAndDisplayResults(query, "All Customers");
         }
             
         catch (Exception e){
@@ -368,7 +368,7 @@ class Frame extends JFrame
                             "GROUP BY D.dealership_number " +
                             "ORDER BY total_amount_sold DESC";
             
-            performQueryAndDisplayResults(query);
+            performQueryAndDisplayResults(query, "Dealership Sales");
         }
             
         catch (Exception e){
@@ -386,7 +386,7 @@ class Frame extends JFrame
                             "ORDER BY SEI.last_name DESC " +
                             "LIMIT 0, 5";
             // order by sum of prices
-            performQueryAndDisplayResults(query);
+            performQueryAndDisplayResults(query, "Sales Employee Information");
         }
             
         catch (Exception e){

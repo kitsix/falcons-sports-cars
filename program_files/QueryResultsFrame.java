@@ -28,11 +28,12 @@ class QueryResultsFrame extends JFrame
     JPanel 				mainPanel;
 	GroupLayout 		layout;
 	DefaultTableModel   model;
-	String				tableName;
+	String				tableName, queryName;
 
-    QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet){        
+    QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet, String queryName){        
 		
 		this.host = host;
+		this.queryName = queryName;
 		this.addWindowListener(this);    
 		Container contentPane = getContentPane();
 		boolean printImage = false;
@@ -217,6 +218,7 @@ class QueryResultsFrame extends JFrame
 		setLocationRelativeTo(this.host);      
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
+		setTitle(queryName);
 	}
 
 	public void actionPerformed(ActionEvent e){

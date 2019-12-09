@@ -17,11 +17,9 @@ class QueryFrame extends JFrame
 
     QueryFrame(Frame host){  
 
-		System.out.println("in here");
 		this.host = host;
 		this.addWindowListener(this);
 
-        queryArea = new JTextArea(""); // DEFAULTING TO A VALUE FOR TESTING
         queryAreaScrollPane = new JScrollPane(queryArea);
 
 		execute = new JButton("Execute");
@@ -45,7 +43,6 @@ class QueryFrame extends JFrame
         add(queryAreaScrollPane, BorderLayout.CENTER);        
         add(buttonPanel, BorderLayout.SOUTH);
 
-        queryArea.requestFocus();
 
         Toolkit tk;
 		Dimension d;
