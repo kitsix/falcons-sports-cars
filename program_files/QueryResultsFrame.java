@@ -192,7 +192,7 @@ class QueryResultsFrame extends JFrame
 		JButton testButton;
 		testButton = new JButton("Add");
 		testButton.addActionListener(this);
-		testButton.setActionCommand("GO");
+		testButton.setActionCommand("ADD");
 
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(this);
@@ -224,9 +224,9 @@ class QueryResultsFrame extends JFrame
 	public void actionPerformed(ActionEvent e){
 		String cmd = e.getActionCommand();
 
-		if(cmd.equals("GO")){
+		if(cmd.equals("ADD")){
 			//dialog = new LoginDialog(this.host);
-			dialog = new LoginDialog(this.host, "hi");
+			dialog = new LoginDialog(this.host, "Add A New Customer");
 		}
 		else if(cmd.equals("DELETE")){
 			int row = queryResultsTable.getSelectedRow();

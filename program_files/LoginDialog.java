@@ -18,6 +18,8 @@ implements ActionListener
     Frame                   mainFrame;
     String                  tempUserName;
     boolean                 loggedIn;
+    JTextField idTF, notesTF, empIdTF, firstNameTF, lastNameTF, emailTF, streetTF, zipTF, cityTF, stateTF, phoneTF;
+
 
 
     LoginDialog(Frame frame, String name){
@@ -25,8 +27,7 @@ implements ActionListener
         this.mainFrame = frame;
         myMainPanel = new JPanel();
 
-        JLabel idLabel, notesLabel, empIdLabel;
-        JTextField idTF, notesTF, empIdTF;
+        JLabel idLabel, notesLabel, empIdLabel, firstNameLabel, lastNameLabel, emailLabel, streetLabel, zipLabel, stateLabel, phoneLabel, cityLabel;
         
         GroupLayout layout = new GroupLayout(myMainPanel);
         
@@ -34,10 +35,27 @@ implements ActionListener
         layout.setAutoCreateContainerGaps(true);
         
         idLabel = new JLabel("Customer ID: ");
+        firstNameLabel = new JLabel("First Name: ");
+        lastNameLabel = new JLabel("Last Name: ");
+        emailLabel = new JLabel("Email: ");
+        streetLabel = new JLabel("Street: ");
+        zipLabel = new JLabel("Zip Code: ");
+        cityLabel = new JLabel("City: ");
+        stateLabel = new JLabel("State: ");
+        phoneLabel = new JLabel("Phone Number: ");
         notesLabel = new JLabel("Customer Notes: ");
         empIdLabel = new JLabel("Assigned Employee ID: ");
         
         idTF = new JTextField(20);
+        firstNameTF = new JTextField(20);
+        lastNameTF = new JTextField(20);
+        emailTF = new JTextField(20);
+        streetTF = new JTextField(20);
+        zipTF = new JTextField(20);
+        cityTF = new JTextField(20);
+        stateTF = new JTextField(20);
+        phoneTF = new JTextField(20);
+
         notesTF = new JTextField(20);
         empIdTF = new JTextField(20);
         
@@ -45,21 +63,29 @@ implements ActionListener
         
         GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
         
-        hGroup.addGroup(layout.createParallelGroup().addComponent(idLabel).addComponent(notesLabel).addComponent(empIdLabel));
-        hGroup.addGroup(layout.createParallelGroup().addComponent(idTF).addComponent(notesTF).addComponent(empIdTF));
-        
+        hGroup.addGroup(layout.createParallelGroup().addComponent(idLabel).addComponent(notesLabel).addComponent(empIdLabel).addComponent(firstNameLabel).addComponent(lastNameLabel).addComponent(emailLabel).addComponent(streetLabel).addComponent(cityLabel).addComponent(zipLabel).addComponent(stateLabel).addComponent(phoneLabel));
+        hGroup.addGroup(layout.createParallelGroup().addComponent(idTF).addComponent(notesTF).addComponent(empIdTF).addComponent(firstNameTF).addComponent(lastNameTF).addComponent(emailTF).addComponent(streetTF).addComponent(cityTF).addComponent(zipTF).addComponent(stateTF).addComponent(phoneTF));
+
         layout.setHorizontalGroup(hGroup);
         
         GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
         
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(idLabel).addComponent(idTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(firstNameLabel).addComponent(firstNameTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lastNameLabel).addComponent(lastNameTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(emailLabel).addComponent(emailTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(streetLabel).addComponent(streetTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(cityLabel).addComponent(cityTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(zipLabel).addComponent(zipTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(stateLabel).addComponent(stateTF));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(phoneLabel).addComponent(phoneTF));
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(notesLabel).addComponent(notesTF));
         vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(empIdLabel).addComponent(empIdTF));
 
         layout.setVerticalGroup(vGroup);
         
         add (myMainPanel, BorderLayout.CENTER);
-        setTitle("Add Customer");
+        setTitle(name);
 
         submitButton = new JButton("Submit");
         submitButton.setActionCommand("ADD CUSTOMER");
@@ -76,7 +102,7 @@ implements ActionListener
 
         getRootPane().setDefaultButton(loginButton);
         
-        setSize(300, 300);
+        setSize(300, 500);
         setVisible(true);
         setLocationRelativeTo(frame);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -222,6 +248,19 @@ implements ActionListener
         }
         else if(e.getActionCommand().equals("ADD CUSTOMER")){
             System.out.println("hey we're adding a customer (:");
+
+            String query = "CALL add_customer(" +
+                idTF.getText() + "," +
+                firstNameTF.getText() + "," +
+                lastNameTF.getText() + "," +
+                emailTF.getText() + "," +
+                streetTF.getText() + "," +
+                zipTF.getText() + "," +
+                cityTF.getText() + "," +
+                stateTF.getText() + "," +
+                phoneTF.getText() + "," +
+                notesTF.getText() + "," +
+                empIdTF.getText() + ");";
         }
     } 
 
