@@ -152,10 +152,14 @@ CREATE PROCEDURE add_customer(
 	IN customer_notes VARCHAR(1000),
     IN assigned_emp_id INT(11))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: add_customer: INSERT operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
     
     START TRANSACTION;
@@ -184,13 +188,17 @@ CREATE PROCEDURE update_customer_personal_info(
     IN state VARCHAR(100),
     IN phone_number INT(11))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+
 	DECLARE temp_street VARCHAR(100) DEFAULT NULL;
     DECLARE temp_zip VARCHAR(10) DEFAULT NULL;
 
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_customer_personal_info: UPDATE operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
 
 	SELECT p.street, p.zip
@@ -228,10 +236,14 @@ CREATE PROCEDURE update_customer_notes(
 	IN id INT(11),
 	IN customer_notes VARCHAR(1000))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_customer_notes: UPDATE operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
 	
     START TRANSACTION;
@@ -252,12 +264,16 @@ CREATE PROCEDURE add_customer_test_driven_vehicle(
 	IN stock_number INT(11),
 	IN datetime VARCHAR(100))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+
 	DECLARE customer_dealership_number, vehicle_dealership_number INT(11) DEFAULT NULL;
 
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: add_customer_test_driven_vehicle: INSERT operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
     
     SELECT td.*
@@ -294,10 +310,14 @@ CREATE PROCEDURE update_customer_assigned_employee(
 	IN id INT(11),
     IN assigned_emp_id INT(11))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_customer_assigned_employee: UPDATE operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
 
 	SELECT *
@@ -333,10 +353,14 @@ CREATE PROCEDURE add_sales_emp(
     IN state VARCHAR(100),
     IN phone_number INT(11))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: add_sales_emp: INSERT operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
     
     START TRANSACTION;
@@ -358,10 +382,14 @@ DELIMITER $$
 CREATE PROCEDURE remove_sales_emp(
 	IN id INT(11))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+    
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: remove_sales_emp: DELETE operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
     
     START TRANSACTION;
@@ -389,10 +417,14 @@ CREATE PROCEDURE add_vehicle(
     IN car_and_driver_hyperlink VARCHAR(100),
     IN dealership_number INT(11))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: add_vehicle: INSERT operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
     
 	SELECT *
@@ -416,10 +448,14 @@ CREATE PROCEDURE update_sold_vehicle(
     IN sale_datetime VARCHAR(100),
     IN dealership_number INT(11))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+    
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_sold_vehicle: UPDATE operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
     
 	SELECT *
@@ -444,10 +480,14 @@ CREATE PROCEDURE update_delivered_vehicle(
     IN delivery_datetime VARCHAR(100),
     IN dealership_number INT(11))
 BEGIN
+	DECLARE errorCode CHAR(5) DEFAULT '00000';
+	DECLARE errorMsg TEXT;
+    
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
-		ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'PROCEDURE SQL EXCEPTION: update_delivered_vehicle: UPDATE operations rolled back';
+		GET DIAGNOSTICS CONDITION 1 errorCode = RETURNED_SQLSTATE, errorMsg = MESSAGE_TEXT;
+		ROLLBACK;        
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = errorMsg;
 	END;
     
 	SELECT *
