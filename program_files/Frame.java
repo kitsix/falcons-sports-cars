@@ -60,7 +60,7 @@ class Frame extends JFrame
         exitButton.addActionListener(this);
         exitButton.setActionCommand("EXIT");
 
-        testButton = new JButton("Image");
+        testButton = new JButton("All Customers");
         testButton.addActionListener(this);
         testButton.setActionCommand("IMAGE");
 		getRootPane().setDefaultButton(loginButton);

@@ -11,7 +11,7 @@ class ConnectionHandler{
     Connection conn;
     
     ConnectionHandler(){       
-        conn = null;
+        //conn = null;
     }
     
     // Alternative constructor.
@@ -22,7 +22,7 @@ class ConnectionHandler{
         this.port = port;
         this.databaseName = databaseName;
         this.databaseType = (databaseType).toLowerCase();
-        conn = null;
+        //conn = null;
         
         createJdbcUrl();
     }
@@ -32,7 +32,7 @@ class ConnectionHandler{
         this.JdbcUrl = JdbcUrl;
         this.databaseType = (databaseType).toLowerCase();
         
-        conn = null;
+        //conn = null;
     }
     
     // Function for setting the connection properties/credentials -- I used this in combination with the default constructor in the Frame class and
@@ -45,7 +45,7 @@ class ConnectionHandler{
         this.databaseName = databaseName;
         this.databaseType = (databaseType).toLowerCase();
         
-        conn = null;
+        //conn = null;
     }
     
     public void resetConnectionProperties(){
@@ -56,7 +56,7 @@ class ConnectionHandler{
         this.databaseName = null;
         this.databaseType = null;
         
-        conn = null;
+        //conn = null;
     }
     
     // Test function
@@ -150,7 +150,7 @@ class ConnectionHandler{
     public void closeConnection() throws Exception{
         conn.close();
         
-        conn = null;
+        //conn = null;
         
         System.out.println("ConnectionHandler: successfully closed database connection for:");        
         System.out.println("JdbcUrl = \"" + JdbcUrl + "\" | username = \"" + username + "\" | password = \"" + password + "\"");
@@ -188,7 +188,7 @@ class ConnectionHandler{
         test.createJdbcUrl();
         test.printJdbcUrl();
         
-        Connection conn = null;
+        //Connection conn = null;
         
         try{
             test.establishConnection();
