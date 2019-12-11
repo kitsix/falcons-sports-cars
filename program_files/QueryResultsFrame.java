@@ -20,7 +20,7 @@ class QueryResultsFrame extends JFrame
 	implements WindowListener, ActionListener, TableModelListener
 {
 	Frame 				host;
-	LoginDialog			dialog;
+	LoginDialog			dialog, warning;
     JLabel 				queryLabel, queryResultsTableLabel;
     JScrollPane 		queryAreaScrollPane = null;
     JTable 				queryResultsTable;
@@ -193,10 +193,20 @@ class QueryResultsFrame extends JFrame
 		testButton = new JButton("Add");
 		testButton.addActionListener(this);
 		testButton.setActionCommand("ADD");
+		testButton.setVisible(false);
+
 
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand("DELETE");
+		deleteButton.setVisible(false);
+
+		if(queryName.equals("All Customers")){
+			testButton.setVisible(true);
+			deleteButton.setVisible(true);
+		}
+
+
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add(testButton);
@@ -226,14 +236,19 @@ class QueryResultsFrame extends JFrame
 
 		if(cmd.equals("ADD")){
 			//dialog = new LoginDialog(this.host);
-			dialog = new LoginDialog(this.host, "Add A New Customer");
+			if(queryName.equals("Sales Employee Information")){
+				dialog = new LoginDialog(this.host, "Add A New Employee");
+
+			}
+			else{
+				dialog = new LoginDialog(this.host, "Add A New Customer");
+			}
 		}
 		else if(cmd.equals("DELETE")){
 			int row = queryResultsTable.getSelectedRow();
 			String query = "DELETE FROM " + tableName + " WHERE id = " + queryResultsTable.getValueAt(row, 0);
 			this.host.performUpdateQuery(query);
 			model.removeRow(row);
-
 		}
 	}
 
@@ -283,6 +298,18 @@ class QueryResultsFrame extends JFrame
 
 		this.host.performUpdateQuery(query);
 		}
+		else if(model.getColumnName(col).equals("assigned_emp_id") && this.host.role.equals("manager")){
+			String query = "UPDATE " + tableName + " " +
+							"SET " + model.getColumnName(col) + " = " + newValue + " " +
+							"WHERE " + "id" + "  = " + id;
 
+		this.host.performUpdateQuery(query);
+		}
+		else{
+			//warning = new LoginDialog(this.host, "text", 0);
+			JOptionPane.showMessageDialog(this, "No changes will be saved. Permission denied!", "WARNING", JOptionPane.ERROR_MESSAGE);
+
+			System.out.println("nothing done");
+		}
 	}
 }

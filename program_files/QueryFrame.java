@@ -60,6 +60,7 @@ class QueryFrame extends JFrame
 		setVisible(false);
 	}
 
+
     public String getQuery(){
         return queryArea.getText();
     }

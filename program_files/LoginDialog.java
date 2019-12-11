@@ -14,7 +14,7 @@ implements ActionListener
     JPasswordField          passwordTF;
     JLabel                  usernameLabel, passwordLabel, queryLabel;
     JPanel                  myMainPanel, buttonP;
-    JButton                 loginButton, exitButton, submitButton;
+    JButton                 loginButton, exitButton, submitButton, execute;
     ConnectionHandler       connectionHandler;
     Frame                   mainFrame;
     String                  tempUserName;
@@ -22,7 +22,49 @@ implements ActionListener
     JTextField idTF, notesTF, empIdTF, firstNameTF, lastNameTF, emailTF, streetTF, zipTF, cityTF, stateTF, phoneTF, roleTF, dealershipNumTF;
 
 
-    // constructor for adding a customer
+
+    //warning dialog constructor
+
+    LoginDialog(Frame host, String title, int num){  
+
+		this.mainFrame = host;
+
+		JLabel warning = new JLabel("       Warning! These changes will not be saved!");
+
+
+		execute = new JButton("OK");
+		execute.addActionListener(this);
+		execute.setActionCommand("EXIT");
+		getRootPane().setDefaultButton(execute);
+
+
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(execute);
+
+		add(warning, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+
+        Toolkit tk;
+		Dimension d;
+
+		tk = Toolkit.getDefaultToolkit();
+		d = tk.getScreenSize();
+
+        int queryFrameWidth = d.width/2;
+        int queryFrameHeight = d.height/2;
+
+		setSize(queryFrameWidth, queryFrameHeight);
+		setLocationRelativeTo(this.mainFrame);
+		setTitle("Query Frame");
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+		setVisible(true);
+	}
+
+
+
+
+    // constructor for editing dialogs
     LoginDialog(Frame frame, String name){
 
         this.mainFrame = frame;
@@ -31,12 +73,13 @@ implements ActionListener
             buildAddCustomerGui(frame, name);
         }
         else if(name.equals("Add A New Employee")){
+            buildAddEmployeeGui(frame, name);
             System.out.println("adding a new employee...");
         }
 }
 
 
-
+    // query dialog constructor
     LoginDialog(Frame frame){
 
         this.mainFrame = frame;
@@ -348,6 +391,36 @@ implements ActionListener
         else if (e.getActionCommand().equals("EXIT")){
             this.dispose();
         }
+        else if(e.getActionCommand().equals("ADD EMPLOYEE")){
+
+            System.out.println("hey we're adding an employee (:");
+
+            try{
+
+            Connection con = this.mainFrame.connectionHandler.getConnection();
+            CallableStatement cs = con.prepareCall("{CALL add_sales_emp(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+
+            cs.setInt(1, Integer.parseInt(empIdTF.getText()));
+            cs.setString(2, usernameTF.getText());
+            cs.setString(3, passwordTF.getPassword().toString());
+            cs.setString(4, roleTF.getText());
+            cs.setInt(5, Integer.parseInt(dealershipNumTF.getText()));
+            cs.setString(6, "'" + firstNameTF.getText() + "''");
+            cs.setString(7, "'" + lastNameTF.getText() + "''");
+            cs.setString(8, "'" + emailTF.getText() + "''");
+            cs.setString(9, "'" + streetTF.getText() + "''");
+            cs.setString(10, "'" + zipTF.getText() + "''");
+            cs.setString(11, "'" + cityTF.getText() + "''");
+            cs.setString(12, "'" + stateTF.getText() + "''");
+            cs.setInt(13, Integer.parseInt(phoneTF.getText()));
+            cs.executeUpdate();
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+                System.out.println("MEH");
+            }
+
+        }
         else if(e.getActionCommand().equals("ADD CUSTOMER")){
             System.out.println("hey we're adding a customer (:");
 
@@ -363,36 +436,19 @@ implements ActionListener
 
             //CallableStatement cs = this.connectionHandler.conn.prepareCall("{CALL add_customer(?,?,?,?,?,?,?,?,?,?,?)}");
             cs.setInt(1, Integer.parseInt(idTF.getText()));
-            cs.setString(2, firstNameTF.getText());
-            cs.setString(3, lastNameTF.getText());
-            cs.setString(4, emailTF.getText());
-            cs.setString(5, streetTF.getText());
-            cs.setString(6, zipTF.getText());
-            cs.setString(7, cityTF.getText());
-            cs.setString(8, stateTF.getText());
+            cs.setString(2, "'" + firstNameTF.getText() + "''");
+            cs.setString(3, "'" + lastNameTF.getText() + "''");
+            cs.setString(4, "'" + emailTF.getText() + "''");
+            cs.setString(5, "'" + streetTF.getText() + "''");
+            cs.setString(6, "'" + zipTF.getText() + "''");
+            cs.setString(7, "'" + cityTF.getText() + "''");
+            cs.setString(8, "'" + stateTF.getText() + "''");
             cs.setInt(9, Integer.parseInt(phoneTF.getText()));
-            cs.setString(10, notesTF.getText());
+            cs.setString(10, "'" + notesTF.getText() + "''");
             cs.setInt(11, Integer.parseInt(empIdTF.getText()));
-            //cs.registerOutParameter(12, java.sql.Types.VARCHAR);
 
             cs.executeUpdate();
 
-            //String result = cs.getString(12);
-           // System.out.println("This is the resulting response..." + result);
-            // String query = "CALL add_customer(" +
-            //     idTF.getText() + ", " +
-            //     "'" + firstNameTF.getText() + "'" + ", " +
-            //     "'" + lastNameTF.getText() + "'" + ", " +
-            //     "'" + emailTF.getText() + "'" + ", " +
-            //     "'" + streetTF.getText() + "'" + ", " +
-            //     "'" + zipTF.getText() + "'" + ", " +
-            //     "'" + cityTF.getText() + "'" + ", " +
-            //     "'" + stateTF.getText() + "'" + ", " +
-            //     phoneTF.getText() + ", " +
-            //     "'" + notesTF.getText() + "'" + ", " +
-            //     empIdTF.getText() + ");";
-
-            // this.mainFrame.performQuery(query);
             }
             catch(Exception ex){
                 ex.printStackTrace();
@@ -424,7 +480,7 @@ public void login(ConnectionHandler connectionHandler){
                     loginSucceeded = false;
                 }
                 else {
-                    role = resultSet.getObject(1).toString();
+                    this.role = resultSet.getObject(1).toString();
                 }
             }
             
@@ -439,20 +495,26 @@ public void login(ConnectionHandler connectionHandler){
                 this.mainFrame.loginButton.setText("Logout");
                 this.mainFrame.loginButton.setActionCommand("LOGOUT");
                 System.out.println(role);
-                if(role.equals("floor") || role.equals("internet")){
+                if(this.role.equals("floor") || this.role.equals("internet")){
                     this.mainFrame.customerVisitsMenuItem.setVisible(true);
                     this.mainFrame.testDriveMenuItem.setVisible(true);
                     this.mainFrame.topFiveVehiclesMenuItem.setVisible(true);
+                    this.mainFrame.testButton.setVisible(true);
+                    this.mainFrame.inventoryButton.setVisible(true);
                 }
-                else if(role.equals("manager")){
+                else if(this.role.equals("manager")){
                     this.mainFrame.customerVisitsMenuItem.setVisible(true);
                     this.mainFrame.testDriveMenuItem.setVisible(true);
                     this.mainFrame.topFiveVehiclesMenuItem.setVisible(true);
                     this.mainFrame.salesMenuItem.setVisible(true);
                     this.mainFrame.employeeInformationMenuItem.setVisible(true);
+                    this.mainFrame.testButton.setVisible(true);
+                    this.mainFrame.inventoryButton.setVisible(true);
+                    this.mainFrame.role = "manager";
 
                 }
                 dispose();
+                System.out.println("ROLE: " + this.mainFrame.role);
             }
             else {
                 JOptionPane.showMessageDialog(this, "Login failed!", "Alert", JOptionPane.ERROR_MESSAGE);
@@ -464,6 +526,6 @@ public ConnectionHandler getConnectionHandler(){
 }
 
 public String getRole() {
-    return role;
+    return this.role;
 }
 }

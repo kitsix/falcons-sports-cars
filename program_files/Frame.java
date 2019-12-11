@@ -33,7 +33,7 @@ import java.awt.Image;
 class Frame extends JFrame
 			implements ActionListener, WindowListener
 { 
-    JButton loginButton, exitButton, testButton;
+    JButton loginButton, exitButton, testButton, inventoryButton;
     JPanel mainPanel;
     JMenu loginMenu;
     JMenuItem customerVisitsMenuItem, topFiveVehiclesMenuItem, testDriveMenuItem, salesMenuItem, employeeInformationMenuItem;
@@ -44,6 +44,7 @@ class Frame extends JFrame
     Vector<QueryResultsFrame> queryResultsFrameVector;    
     int queryResultsCount;
     boolean loggedIn;
+    String role;
 
     Frame(){
 		loggedIn = false;
@@ -63,10 +64,17 @@ class Frame extends JFrame
         testButton = new JButton("All Customers");
         testButton.addActionListener(this);
         testButton.setActionCommand("IMAGE");
-		getRootPane().setDefaultButton(loginButton);
+        getRootPane().setDefaultButton(loginButton);
+        testButton.setVisible(false);
+        
+        inventoryButton = new JButton("Inventory");
+        inventoryButton.addActionListener(this);
+        inventoryButton.setActionCommand("INVENTORY");
+        inventoryButton.setVisible(false);
 
         mainPanel = new JPanel();
         mainPanel.add(testButton);
+        mainPanel.add(inventoryButton);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);
@@ -270,7 +278,7 @@ class Frame extends JFrame
 
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
-        loginDialog = new LoginDialog(this, this.connectionHandler);   
+        this.loginDialog = new LoginDialog(this, this.connectionHandler);   
     }
     
     public void closeQueryResultsFrames(){
@@ -375,6 +383,22 @@ class Frame extends JFrame
             e.printStackTrace();
         }        
     }
+
+    public void getDealershipInventory(){
+        try{
+            String query = "SELECT V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink, V.image " +
+            "FROM vehicles V, dealerships D " +
+            "WHERE D.dealership_number = V.dealership_number " +
+            "GROUP BY V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink, V.image";
+            // order by sum of prices
+            performQueryAndDisplayResults(query, "Dealership Inventory");
+        }
+            
+        catch (Exception e){
+            e.printStackTrace();
+        }  
+
+    }
         
     public void getSalesEmpsInfo(){
         System.out.println("Frame: SALES_EMPS_INFO");                                
@@ -412,12 +436,21 @@ class Frame extends JFrame
                 //picture();
                 getAllCustomers();
             }
+            else if(cmd.equals("INVENTORY")){
+                System.out.println("the inventory button has been pressed....");
+                getDealershipInventory();
+
+            }
+
 		}
 
 		catch (Exception x){
 			x.printStackTrace();
 			System.out.println("Frame: actionPerformed(): Exception");
-		}
+        }
+        
+        this.role = this.loginDialog.getRole();
+        System.out.println("The role on the frame is: " + this.role);
     }
 
     public void picture(){
