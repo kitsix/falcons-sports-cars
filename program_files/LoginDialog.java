@@ -23,46 +23,6 @@ implements ActionListener
 
 
 
-    //warning dialog constructor
-
-    LoginDialog(Frame host, String title, int num){  
-
-		this.mainFrame = host;
-
-		JLabel warning = new JLabel("       Warning! These changes will not be saved!");
-
-
-		execute = new JButton("OK");
-		execute.addActionListener(this);
-		execute.setActionCommand("EXIT");
-		getRootPane().setDefaultButton(execute);
-
-
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.add(execute);
-
-		add(warning, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
-
-
-        Toolkit tk;
-		Dimension d;
-
-		tk = Toolkit.getDefaultToolkit();
-		d = tk.getScreenSize();
-
-        int queryFrameWidth = d.width/2;
-        int queryFrameHeight = d.height/2;
-
-		setSize(queryFrameWidth, queryFrameHeight);
-		setLocationRelativeTo(this.mainFrame);
-		setTitle("Query Frame");
-        setDefaultCloseOperation(HIDE_ON_CLOSE);
-		setVisible(true);
-	}
-
-
-
 
     // constructor for editing dialogs
     LoginDialog(Frame frame, String name){
@@ -117,6 +77,87 @@ implements ActionListener
         buildLoginGui(frame); 
 }
 
+void buildAddVehicleGui(Frame frame, String name){
+
+    myMainPanel = new JPanel();
+
+    JLabel empIdLabel, usernameLabel, passwordLabel, roleLabel, dealershipNumLabel, firstNameLabel, lastNameLabel, emailLabel, streetLabel, zipLabel, stateLabel, phoneLabel, cityLabel;
+    
+    GroupLayout layout = new GroupLayout(myMainPanel);
+    
+    layout.setAutoCreateGaps(true);
+    layout.setAutoCreateContainerGaps(true);
+    
+    empIdLabel = new JLabel("Stock Number: ");
+    usernameLabel = new JLabel("Make: ");
+    passwordLabel = new JLabel("Model: ");
+    roleLabel = new JLabel("Year: ");
+    dealershipNumLabel = new JLabel("New: ");
+    firstNameLabel = new JLabel("Price: ");
+    lastNameLabel = new JLabel("Dealership Number: ");
+    
+    
+    empIdTF = new JTextField(20);
+    usernameTF = new JTextField(20);
+    passwordTF = new JPasswordField(20);
+    roleTF = new JTextField(20);
+    dealershipNumTF = new JTextField(20);
+    firstNameTF = new JTextField(20);
+    lastNameTF = new JTextField(20);
+    
+
+    notesTF = new JTextField(20);
+    
+    myMainPanel.setLayout (layout);
+    
+    GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+    
+    hGroup.addGroup(layout.createParallelGroup().addComponent(empIdLabel).addComponent(usernameLabel).addComponent(passwordLabel).addComponent(roleLabel).addComponent(dealershipNumLabel).addComponent(firstNameLabel).addComponent(lastNameLabel));
+    hGroup.addGroup(layout.createParallelGroup().addComponent(empIdTF).addComponent(usernameTF).addComponent(passwordTF).addComponent(roleTF).addComponent(dealershipNumTF).addComponent(firstNameTF).addComponent(lastNameTF));
+
+    layout.setHorizontalGroup(hGroup);
+    
+    GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+    
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(empIdLabel).addComponent(empIdTF));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(usernameLabel).addComponent(usernameTF));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(passwordLabel).addComponent(passwordTF));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(roleLabel).addComponent(roleTF));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(dealershipNumLabel).addComponent(dealershipNumTF));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(firstNameLabel).addComponent(firstNameTF));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lastNameLabel).addComponent(lastNameTF));
+
+    layout.setVerticalGroup(vGroup);
+    
+    add (myMainPanel, BorderLayout.CENTER);
+    setTitle(name);
+
+    submitButton = new JButton("Submit");
+    submitButton.setActionCommand("ADD VEHICLE");
+    submitButton.addActionListener(this);
+
+    exitButton = new JButton("Exit");
+    exitButton.setActionCommand("EXIT");
+    exitButton.addActionListener(this);
+    
+    buttonP = new JPanel(new FlowLayout());
+    buttonP.add(submitButton);
+    buttonP.add(exitButton);
+    add (buttonP, BorderLayout.SOUTH);
+
+    getRootPane().setDefaultButton(loginButton);
+    
+    setSize(300, 500);
+    setVisible(true);
+    setLocationRelativeTo(frame);
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    setResizable(false); 
+
+}
+
+
+
+
 
     void buildAddEmployeeGui(Frame frame, String name){
 
@@ -129,7 +170,7 @@ implements ActionListener
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
         
-        empIdLabel = new JLabel("Customer ID: ");
+        empIdLabel = new JLabel("Employee ID: ");
         usernameLabel = new JLabel("Username: ");
         passwordLabel = new JLabel("Password: ");
         roleLabel = new JLabel("Role: ");
@@ -457,6 +498,38 @@ implements ActionListener
 
         }
 
+        else if(e.getActionCommand().equals("ADD VEHICLE")){
+            System.out.println("hey we're adding a vehicle (:");
+
+
+            try{
+            
+            Connection con = this.mainFrame.connectionHandler.getConnection();
+            CallableStatement cs = con.prepareCall("{CALL add_vehicle(?,?,?,?,?,?,?,?,?,?,?)}");
+
+            cs.setInt(1, Integer.parseInt(empIdTF.getText()));
+            cs.setString(2, "'" + usernameTF.getText() + "'");
+            cs.setString(3, "'" + passwordTF.getPassword().toString() + "'");
+            cs.setString(4, "'" + roleTF.getText() + "'");
+            cs.setInt(5, Integer.parseInt(dealershipNumTF.getText()));
+            cs.setString(6, "'" + firstNameTF.getText() + "");
+            cs.setString(7, "'" + lastNameTF.getText() + "");
+            cs.setString(8, "'" + emailTF.getText() + "");
+            cs.setString(9, "'" + streetTF.getText() + "");
+            cs.setString(10, "'" + zipTF.getText() + "");
+            cs.setString(11, "'" + cityTF.getText() + "'");
+            cs.setString(12, "'" + stateTF.getText() + "'");
+            cs.setInt(13, Integer.parseInt(phoneTF.getText()));
+            cs.executeUpdate();
+
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+                System.out.println("MEH");
+            }
+
+        }
+
     } 
 
 public void login(ConnectionHandler connectionHandler){
@@ -501,6 +574,7 @@ public void login(ConnectionHandler connectionHandler){
                     this.mainFrame.topFiveVehiclesMenuItem.setVisible(true);
                     this.mainFrame.testButton.setVisible(true);
                     this.mainFrame.inventoryButton.setVisible(true);
+                    this.mainFrame.role = "other";
                 }
                 else if(this.role.equals("manager")){
                     this.mainFrame.customerVisitsMenuItem.setVisible(true);

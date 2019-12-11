@@ -146,8 +146,6 @@ class QueryResultsFrame extends JFrame
 						String test = queryResultsTable.getValueAt(row, col).toString();
 						Object testImage = queryResultsTable.getValueAt(row, col);
 						Desktop desktop = java.awt.Desktop.getDesktop();
-						if(test.startsWith("[B"))
-							System.out.println("hacked");
 						if(link.startsWith("https")) {
 							try {
 								URI uri = new URI(link);
@@ -205,6 +203,14 @@ class QueryResultsFrame extends JFrame
 			testButton.setVisible(true);
 			deleteButton.setVisible(true);
 		}
+		else if(queryName.equals("Dealership Inventory") && this.host.role.equals("manager")){
+			deleteButton.setVisible(true);
+			testButton.setVisible(true);
+		}
+		else if(queryName.equals("Sales Employee Information")){
+			deleteButton.setVisible(true);
+			testButton.setVisible(true);
+		}
 
 
 
@@ -240,8 +246,11 @@ class QueryResultsFrame extends JFrame
 				dialog = new LoginDialog(this.host, "Add A New Employee");
 
 			}
-			else{
+			else if(queryName.equals("All Customers")){
 				dialog = new LoginDialog(this.host, "Add A New Customer");
+			}
+			else if(queryName.equals("Dealership Inventory")){
+				dialog = new LoginDialog(this.host, "Add A New Vehicle");
 			}
 		}
 		else if(cmd.equals("DELETE")){
@@ -291,7 +300,14 @@ class QueryResultsFrame extends JFrame
 		System.out.println("this was edited..." + temp + "and it was this col:" + col);
 		System.out.println("table name...." + tableName);
 
-		if(model.getColumnName(col).equals("dealership_number")){
+		if(model.getColumnName(col).equals("customer_notes") || model.getColumnName(col).equals("dealership_number") || model.getColumnName(col).equals("stock_number")){
+			String query = "UPDATE " + tableName + " " +
+							"SET " + model.getColumnName(col) + " = " + newValue + " " +
+							"WHERE " + "id" + "  = " + id;
+
+		this.host.performUpdateQuery(query);
+		}
+		else if(model.getColumnName(col).equals("dealership_number")){
 			String query = "UPDATE " + tableName + " " +
 							"SET " + model.getColumnName(col) + " = " + newValue + " " +
 							"WHERE " + "id" + "  = " + id;
