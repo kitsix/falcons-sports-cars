@@ -255,9 +255,17 @@ class QueryResultsFrame extends JFrame
 		}
 		else if(cmd.equals("DELETE")){
 			int row = queryResultsTable.getSelectedRow();
+			if(queryName.equals("All Customers")){
 			String query = "DELETE FROM " + tableName + " WHERE id = " + queryResultsTable.getValueAt(row, 0);
 			this.host.performUpdateQuery(query);
 			model.removeRow(row);
+			}
+			else if(queryName.equals("Dealership Inventory")){
+				String query = "DELETE FROM " + tableName + " WHERE make = " + queryResultsTable.getValueAt(row, 0);
+			this.host.performUpdateQuery(query);
+			model.removeRow(row);
+
+			}
 		}
 	}
 

@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,6 +36,9 @@ implements ActionListener
         else if(name.equals("Add A New Employee")){
             buildAddEmployeeGui(frame, name);
             System.out.println("adding a new employee...");
+        }
+        else if(name.equals("Add A New Vehicle")){
+            buildAddVehicleGui(frame, name);
         }
 }
 
@@ -99,7 +103,7 @@ void buildAddVehicleGui(Frame frame, String name){
     
     empIdTF = new JTextField(20);
     usernameTF = new JTextField(20);
-    passwordTF = new JPasswordField(20);
+    emailTF = new JTextField(20);
     roleTF = new JTextField(20);
     dealershipNumTF = new JTextField(20);
     firstNameTF = new JTextField(20);
@@ -113,7 +117,7 @@ void buildAddVehicleGui(Frame frame, String name){
     GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
     
     hGroup.addGroup(layout.createParallelGroup().addComponent(empIdLabel).addComponent(usernameLabel).addComponent(passwordLabel).addComponent(roleLabel).addComponent(dealershipNumLabel).addComponent(firstNameLabel).addComponent(lastNameLabel));
-    hGroup.addGroup(layout.createParallelGroup().addComponent(empIdTF).addComponent(usernameTF).addComponent(passwordTF).addComponent(roleTF).addComponent(dealershipNumTF).addComponent(firstNameTF).addComponent(lastNameTF));
+    hGroup.addGroup(layout.createParallelGroup().addComponent(empIdTF).addComponent(usernameTF).addComponent(emailTF).addComponent(roleTF).addComponent(dealershipNumTF).addComponent(firstNameTF).addComponent(lastNameTF));
 
     layout.setHorizontalGroup(hGroup);
     
@@ -121,7 +125,7 @@ void buildAddVehicleGui(Frame frame, String name){
     
     vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(empIdLabel).addComponent(empIdTF));
     vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(usernameLabel).addComponent(usernameTF));
-    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(passwordLabel).addComponent(passwordTF));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(passwordLabel).addComponent(emailTF));
     vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(roleLabel).addComponent(roleTF));
     vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(dealershipNumLabel).addComponent(dealershipNumTF));
     vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(firstNameLabel).addComponent(firstNameTF));
@@ -475,7 +479,6 @@ void buildAddVehicleGui(Frame frame, String name){
             Connection con = this.mainFrame.connectionHandler.getConnection();
             CallableStatement cs = con.prepareCall("{CALL add_customer(?,?,?,?,?,?,?,?,?,?,?)}");
 
-            //CallableStatement cs = this.connectionHandler.conn.prepareCall("{CALL add_customer(?,?,?,?,?,?,?,?,?,?,?)}");
             cs.setInt(1, Integer.parseInt(idTF.getText()));
             cs.setString(2, "'" + firstNameTF.getText() + "''");
             cs.setString(3, "'" + lastNameTF.getText() + "''");
@@ -509,18 +512,19 @@ void buildAddVehicleGui(Frame frame, String name){
 
             cs.setInt(1, Integer.parseInt(empIdTF.getText()));
             cs.setString(2, "'" + usernameTF.getText() + "'");
-            cs.setString(3, "'" + passwordTF.getPassword().toString() + "'");
-            cs.setString(4, "'" + roleTF.getText() + "'");
-            cs.setInt(5, Integer.parseInt(dealershipNumTF.getText()));
-            cs.setString(6, "'" + firstNameTF.getText() + "");
-            cs.setString(7, "'" + lastNameTF.getText() + "");
-            cs.setString(8, "'" + emailTF.getText() + "");
-            cs.setString(9, "'" + streetTF.getText() + "");
-            cs.setString(10, "'" + zipTF.getText() + "");
-            cs.setString(11, "'" + cityTF.getText() + "'");
-            cs.setString(12, "'" + stateTF.getText() + "'");
-            cs.setInt(13, Integer.parseInt(phoneTF.getText()));
+            cs.setString(3, "'" + emailTF.getText() + "'");
+            cs.setString(4, "2019-05-02 11:42:46");
+            cs.setString(5, "2019-05-02 11:42:46");
+            cs.setInt(6, Integer.parseInt(roleTF.getText()));
+            cs.setBoolean(7, true);
+            cs.setNull(8, java.sql.Types.BLOB);
+            cs.setFloat(9, Float.parseFloat(firstNameTF.getText()));
+            cs.setString(10, "http.car.com");
+            cs.setInt(11, Integer.parseInt(lastNameTF.getText()));
             cs.executeUpdate();
+
+
+
 
             }
             catch(Exception ex){
