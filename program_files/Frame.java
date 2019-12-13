@@ -1,14 +1,10 @@
 import java.sql.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javafx.embed.swing.SwingFXUtils;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.*;
 import java.awt.Image;
 
@@ -37,7 +33,7 @@ import java.awt.Image;
 class Frame extends JFrame
 			implements ActionListener, WindowListener
 { 
-    JButton loginButton, exitButton, testButton;
+    JButton loginButton, exitButton, testButton, inventoryButton;
     JPanel mainPanel;
     JMenu loginMenu;
     JMenuItem customerVisitsMenuItem, topFiveVehiclesMenuItem, testDriveMenuItem, salesMenuItem, employeeInformationMenuItem;
@@ -48,6 +44,7 @@ class Frame extends JFrame
     Vector<QueryResultsFrame> queryResultsFrameVector;    
     int queryResultsCount;
     boolean loggedIn;
+    String role;
 
     Frame(){
 		loggedIn = false;
@@ -64,12 +61,20 @@ class Frame extends JFrame
         exitButton.addActionListener(this);
         exitButton.setActionCommand("EXIT");
 
-        testButton = new JButton("Image");
+        testButton = new JButton("All Customers");
         testButton.addActionListener(this);
         testButton.setActionCommand("IMAGE");
-		getRootPane().setDefaultButton(loginButton);
+        getRootPane().setDefaultButton(loginButton);
+        testButton.setVisible(false);
+        
+        inventoryButton = new JButton("Inventory");
+        inventoryButton.addActionListener(this);
+        inventoryButton.setActionCommand("INVENTORY");
+        inventoryButton.setVisible(false);
 
         mainPanel = new JPanel();
+        mainPanel.add(testButton);
+        mainPanel.add(inventoryButton);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         queryFrame = new QueryFrame(this);
@@ -211,36 +216,46 @@ class Frame extends JFrame
 		}
 	}
     
-    public void performQuery(){
-        try{
-            System.out.println("Frame: PERFORM_QUERY");
-            
-            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(queryFrame.getQuery());
+    public void performQuery(String query){
+        try{            
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
-            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
+            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet, " ");  
             
             queryResultsCount += 1;
             
             queryResultsFrameVector.addElement(queryResultsFrame);        
-            queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
+            //queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
         }
             
         catch (Exception e){
             e.printStackTrace();
         }
-	}
+    }
     
-    public void performQueryAndDisplayResults(String query){
+    public void performUpdateQuery(String query){
+        try{            
+            PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);
+            int result = connectionHandler.performUpdateQuery(pstatement);
+            
+        }
+            
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void performQueryAndDisplayResults(String query, String queryName){
         try{
             PreparedStatement pstatement = connectionHandler.getConnection().prepareStatement(query);        
             ResultSet resultSet = connectionHandler.performQuery(pstatement);
             
-            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet);  
+            QueryResultsFrame queryResultsFrame = new QueryResultsFrame(this, pstatement, resultSet, queryName);  
             
             queryResultsCount += 1;
             
             queryResultsFrameVector.addElement(queryResultsFrame);        
-            queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
+            //queryResultsFrame.setTitle("Query Results Frame #" + queryResultsCount);
         }
             
         catch (Exception e){
@@ -263,7 +278,7 @@ class Frame extends JFrame
 
     public void login(){
         System.out.println("Frame: LOGIN_PRESSED");
-        loginDialog = new LoginDialog(this, this.connectionHandler);   
+        this.loginDialog = new LoginDialog(this, this.connectionHandler);   
     }
     
     public void closeQueryResultsFrames(){
@@ -286,7 +301,7 @@ class Frame extends JFrame
                 String query = "SELECT CI.id, CI.first_name, CI.last_name, CI.customer_notes, CTDV.dealership_number, D.street, D.zip, CTDV.stock_number, CTDV.datetime " +
                                 "FROM customers_info CI, customers_test_driven_vehicles CTDV, dealerships D "  + 
                                 "WHERE CI.id = \'" + customerID + "\' AND CI.id = CTDV.id AND CTDV.dealership_number = D.dealership_number";
-                performQueryAndDisplayResults(query);
+                performQueryAndDisplayResults(query, "Customer Visit Information");
             }
                 
             catch (Exception e){
@@ -313,7 +328,7 @@ class Frame extends JFrame
                             "WHERE V.make = \'" + make + "\' AND V.model = \'" + model + "\' AND V.stock_number = TD.stock_number AND " +
                             "TD.customer_id = C.id AND C.id = P.id AND C.assigned_emp_id = E.id AND E.dealership_number = D.dealership_number";
             
-            performQueryAndDisplayResults(query);
+            performQueryAndDisplayResults(query, "Test Drives");
         }
         
         else
@@ -326,15 +341,29 @@ class Frame extends JFrame
             String query = "SELECT COUNT(*) AS num_sold_vehicles, V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink, V.image " +
                             "FROM vehicles V, purchase_vehicle PV " +
                             "WHERE PV.stock_number = V.stock_number " +
-                            "GROUP BY V.make, V.model, V.year, V.new " +
+                            "GROUP BY V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink, V.image " +
                             "ORDER BY num_sold_vehicles DESC " +
                             "LIMIT 0, 5";
             
-            performQueryAndDisplayResults(query);
+            performQueryAndDisplayResults(query, "Top Five Vehicles");
         }   
         catch (Exception e){
             e.printStackTrace();
         }        
+    }
+
+
+    public void getAllCustomers(){
+        try{
+            String query = "SELECT * " +
+                            "FROM customers";
+            
+            performQueryAndDisplayResults(query, "All Customers");
+        }
+            
+        catch (Exception e){
+            e.printStackTrace();
+        }  
     }
         
     public void getTotalDealershipSales(){
@@ -347,12 +376,28 @@ class Frame extends JFrame
                             "GROUP BY D.dealership_number " +
                             "ORDER BY total_amount_sold DESC";
             
-            performQueryAndDisplayResults(query);
+            performQueryAndDisplayResults(query, "Dealership Sales");
         }
             
         catch (Exception e){
             e.printStackTrace();
         }        
+    }
+
+    public void getDealershipInventory(){
+        try{
+            String query = "SELECT V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink, V.image " +
+            "FROM vehicles V, dealerships D " +
+            "WHERE D.dealership_number = V.dealership_number " +
+            "GROUP BY V.make, V.model, V.year, V.new, V.car_and_driver_hyperlink, V.image";
+            // order by sum of prices
+            performQueryAndDisplayResults(query, "Dealership Inventory");
+        }
+            
+        catch (Exception e){
+            e.printStackTrace();
+        }  
+
     }
         
     public void getSalesEmpsInfo(){
@@ -365,7 +410,7 @@ class Frame extends JFrame
                             "ORDER BY SEI.last_name DESC " +
                             "LIMIT 0, 5";
             // order by sum of prices
-            performQueryAndDisplayResults(query);
+            performQueryAndDisplayResults(query, "Sales Employee Information");
         }
             
         catch (Exception e){
@@ -388,14 +433,24 @@ class Frame extends JFrame
                 exit();
             else if (cmd.equals("IMAGE")){
                 System.out.println("image button has been pressed..");
-                picture();
+                //picture();
+                getAllCustomers();
             }
+            else if(cmd.equals("INVENTORY")){
+                System.out.println("the inventory button has been pressed....");
+                getDealershipInventory();
+
+            }
+
 		}
 
 		catch (Exception x){
 			x.printStackTrace();
 			System.out.println("Frame: actionPerformed(): Exception");
-		}
+        }
+        
+        this.role = this.loginDialog.getRole();
+        System.out.println("The role on the frame is: " + this.role);
     }
 
     public void picture(){

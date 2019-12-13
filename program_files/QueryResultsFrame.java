@@ -9,40 +9,40 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.sql.*;
 import javax.imageio.ImageIO;
-import javax.swing.table.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 
 // This is a simple class for displaying query results.
 // Note that each instance of this class is stored in a the queryResultsFrameVector data member of the Frame class.
 // This is to allow a user to dispose of all currently open QueryResultsFrame with a single click of the "Close Query Results" button.
 class QueryResultsFrame extends JFrame
-	implements WindowListener, ActionListener
+	implements WindowListener, ActionListener, TableModelListener
 {
 	Frame 				host;
-	LoginDialog		dialog;
+	LoginDialog			dialog, warning;
     JLabel 				queryLabel, queryResultsTableLabel;
-    JTextArea 			queryArea;
     JScrollPane 		queryAreaScrollPane = null;
     JTable 				queryResultsTable;
     JScrollPane 		queryResultsTableScrollPane = null;
     JPanel 				mainPanel;
-    GroupLayout 		layout;
+	GroupLayout 		layout;
+	DefaultTableModel   model;
+	String				tableName, queryName;
 
-    QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet){        
+    QueryResultsFrame(Frame host, PreparedStatement pStatement, ResultSet resultSet, String queryName){        
 		
 		this.host = host;
+		this.queryName = queryName;
 		this.addWindowListener(this);    
 		Container contentPane = getContentPane();
 		boolean printImage = false;
 
         try{   
-            queryArea = new JTextArea(pStatement.toString());
-			queryArea.setEditable(false);
-			//queryAreaScrollPane = new JScrollPane(queryArea);      
-     
             Vector columnNames = new Vector<Object>();
             Vector rows = new Vector<Object>();
-            
-            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+			ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+			tableName = resultSetMetaData.getTableName(1);
             
             for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++){
 				columnNames.addElement(resultSetMetaData.getColumnName(i));
@@ -86,38 +86,66 @@ class QueryResultsFrame extends JFrame
 							g.drawImage(image, 50, 50, 100, 100, this);
 						}
 					};
-						//imagePanel.repaint();
 						ImageFrame test = new ImageFrame(this);
 						test.add(imagePanel);
 						imagePanel.repaint(); 
 					}}
 			}
 
-			DefaultTableModel model = new DefaultTableModel(rows, columnNames)
+			model = new DefaultTableModel(rows, columnNames)
         {
             //  Returning the Class of each column will allow different
             //  renderers to be used based on Class
             public Class getColumnClass(int column)
             {
                 return getValueAt(0, column).getClass();
-            }
-        };
+			}
+
+			public String getText(int column){
+				return getColumnName(column);
+			}
+
+			public String getID(int row){
+				return getValueAt(row, 0).toString();
+			}
+		};
+
+
+		// AbstractTableModel abstractModel = new AbstractTableModel() {
+		// 	public String getColumnName(int col) {
+		// 		return columnNames[col].toString();
+		// 	}
+		// 	public int getRowCount() { return rowData.length; }
+		// 	public int getColumnCount() { return columnNames.length; }
+		// 	public Object getValueAt(int row, int col) {
+		// 		return rowData[row][col];
+		// 	}
+		// 	public boolean isCellEditable(int row, int col)
+		// 		{ return true; }
+		// 	public void setValueAt(Object value, int row, int col) {
+		// 		rowData[row][col] = value;
+		// 		fireTableCellUpdated(row, col);
+		// 	}
+		// }
             
             queryResultsTable = new JTable(model);
 			queryResultsTableScrollPane = new JScrollPane(queryResultsTable);
-			
+
+
+			model.addTableModelListener(this);
+
+
 			queryResultsTable.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent me) {
 					if(me.getClickCount() == 1) {
+						System.out.println("one click");
 						int row = queryResultsTable.getSelectedRow();
 						int col = queryResultsTable.getSelectedColumn();
 						String link = queryResultsTable.getValueAt(row, col).toString();
 						String test = queryResultsTable.getValueAt(row, col).toString();
 						Object testImage = queryResultsTable.getValueAt(row, col);
 						Desktop desktop = java.awt.Desktop.getDesktop();
-						if(test.startsWith("[B"))
-							System.out.println("hacked");
 						if(link.startsWith("https")) {
 							try {
 								URI uri = new URI(link);
@@ -131,6 +159,10 @@ class QueryResultsFrame extends JFrame
 								ioe.printStackTrace();
 							}
 						}
+					}
+
+					if(me.getClickCount() == 2){
+						System.out.println("you are going to edit something now");
 					}
 				}
 			});
@@ -147,26 +179,46 @@ class QueryResultsFrame extends JFrame
 		layout.setAutoCreateContainerGaps(true);
 
 		GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
-
 		hGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-			//.addComponent(queryAreaScrollPane)
             .addComponent(queryResultsTableScrollPane));
-
 		layout.setHorizontalGroup(hGroup);
 
 		GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
-
-		//vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryAreaScrollPane));
 		vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(queryResultsTableScrollPane));
-
         layout.setVerticalGroup(vGroup);
 
 		JButton testButton;
-		testButton = new JButton("hi(:");
+		testButton = new JButton("Add");
 		testButton.addActionListener(this);
-		testButton.setActionCommand("GO");
+		testButton.setActionCommand("ADD");
+		testButton.setVisible(false);
 
-		contentPane.add(testButton, BorderLayout.NORTH);
+
+		JButton deleteButton = new JButton("Delete");
+		deleteButton.addActionListener(this);
+		deleteButton.setActionCommand("DELETE");
+		deleteButton.setVisible(false);
+
+		if(queryName.equals("All Customers")){
+			testButton.setVisible(true);
+			deleteButton.setVisible(true);
+		}
+		else if(queryName.equals("Dealership Inventory") && this.host.role.equals("manager")){
+			deleteButton.setVisible(true);
+			testButton.setVisible(true);
+		}
+		else if(queryName.equals("Sales Employee Information")){
+			deleteButton.setVisible(true);
+			testButton.setVisible(true);
+		}
+
+
+
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(testButton);
+		buttonPanel.add(deleteButton);
+
+		contentPane.add(buttonPanel, BorderLayout.NORTH);
         contentPane.add(mainPanel, BorderLayout.CENTER);
         
         Toolkit tk;
@@ -182,14 +234,38 @@ class QueryResultsFrame extends JFrame
 		setLocationRelativeTo(this.host);      
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
+		setTitle(queryName);
 	}
 
 	public void actionPerformed(ActionEvent e){
 		String cmd = e.getActionCommand();
 
-		if(cmd.equals("GO")){
-			System.out.println("GO GO GOOOOOOOOOOO");
-			dialog = new LoginDialog(this.host);
+		if(cmd.equals("ADD")){
+			//dialog = new LoginDialog(this.host);
+			if(queryName.equals("Sales Employee Information")){
+				dialog = new LoginDialog(this.host, "Add A New Employee");
+
+			}
+			else if(queryName.equals("All Customers")){
+				dialog = new LoginDialog(this.host, "Add A New Customer");
+			}
+			else if(queryName.equals("Dealership Inventory")){
+				dialog = new LoginDialog(this.host, "Add A New Vehicle");
+			}
+		}
+		else if(cmd.equals("DELETE")){
+			int row = queryResultsTable.getSelectedRow();
+			if(queryName.equals("All Customers")){
+			String query = "DELETE FROM " + tableName + " WHERE id = " + queryResultsTable.getValueAt(row, 0);
+			this.host.performUpdateQuery(query);
+			model.removeRow(row);
+			}
+			else if(queryName.equals("Dealership Inventory")){
+				String query = "DELETE FROM " + tableName + " WHERE make = " + queryResultsTable.getValueAt(row, 0);
+			this.host.performUpdateQuery(query);
+			model.removeRow(row);
+
+			}
 		}
 	}
 
@@ -215,5 +291,49 @@ class QueryResultsFrame extends JFrame
 	}
 
 	public void windowOpened(WindowEvent e){
+	}
+
+	@Override
+	public void tableChanged(TableModelEvent e) {
+		int col = e.getColumn();
+		int row = e.getLastRow();
+		String newValue = model.getValueAt(row, col).toString();
+		String id = model.getValueAt(row, 0).toString();
+
+		System.out.println("apply additional action");
+		String temp = e.getSource().toString();
+		System.out.println(model.getColumnName(col));
+		System.out.println(id);	
+		System.out.println(newValue);			
+		System.out.println("this was edited..." + temp + "and it was this col:" + col);
+		System.out.println("table name...." + tableName);
+
+		if(model.getColumnName(col).equals("customer_notes") || model.getColumnName(col).equals("dealership_number") || model.getColumnName(col).equals("stock_number")){
+			String query = "UPDATE " + tableName + " " +
+							"SET " + model.getColumnName(col) + " = " + newValue + " " +
+							"WHERE " + "id" + "  = " + id;
+
+		this.host.performUpdateQuery(query);
+		}
+		else if(model.getColumnName(col).equals("dealership_number")){
+			String query = "UPDATE " + tableName + " " +
+							"SET " + model.getColumnName(col) + " = " + newValue + " " +
+							"WHERE " + "id" + "  = " + id;
+
+		this.host.performUpdateQuery(query);
+		}
+		else if(model.getColumnName(col).equals("assigned_emp_id") && this.host.role.equals("manager")){
+			String query = "UPDATE " + tableName + " " +
+							"SET " + model.getColumnName(col) + " = " + newValue + " " +
+							"WHERE " + "id" + "  = " + id;
+
+		this.host.performUpdateQuery(query);
+		}
+		else{
+			//warning = new LoginDialog(this.host, "text", 0);
+			JOptionPane.showMessageDialog(this, "No changes will be saved. Permission denied!", "WARNING", JOptionPane.ERROR_MESSAGE);
+
+			System.out.println("nothing done");
+		}
 	}
 }
